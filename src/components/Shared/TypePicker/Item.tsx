@@ -5,6 +5,7 @@ import appStyles from '../../../constants/styles';
 interface IPropsItem {
   text: string;
   source: any;
+  active?: boolean;
 }
 
 export default function Item({text, source}: IPropsItem) {
@@ -34,6 +35,9 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 20,
     elevation: 1,
+  },
+  item_active: {
+    backgroundColor: appStyles.COLOR_PRIMARY,
   },
   iconContainer: {
     width: 55,

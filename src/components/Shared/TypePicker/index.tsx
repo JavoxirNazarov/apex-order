@@ -14,7 +14,7 @@ export default function TypePicker() {
       showsHorizontalScrollIndicator={false}
       style={styles.container}
       contentContainerStyle={styles.content}>
-      <Item text="Пицца" source={pizzaImg} />
+      <Item text="Пицца" source={pizzaImg} active />
       <Item text="Напитки" source={waterImg} />
       <Item text="Закуски" source={snackImg} />
       <Item text="Десерт" source={dessertImg} />
