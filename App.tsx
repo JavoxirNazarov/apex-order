@@ -1,21 +1,22 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
 import React from 'react';
+
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import appStyles from './src/constants/styles';
 import Main from './src/screens/Main';
+import MainIcon from './src/assets/icons/tabs/Main';
+import BasketIcon from './src/assets/icons/tabs/Basket';
+import ContactIcon from './src/assets/icons/tabs/Contacts';
+import ProfileIcon from './src/assets/icons/tabs/Profile';
+import Product from './src/screens/Product';
+
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -23,7 +24,56 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Main />
+      <Product />
+      {/* <Main /> */}
+      {/* <NavigationContainer>
+        <Tab.Navigator
+          tabBarOptions={{
+            activeTintColor: appStyles.COLOR_PRIMARY,
+            inactiveTintColor: '#C1C1CC',
+            labelStyle: {fontSize: 12, fontFamily: appStyles.FONT},
+            tabStyle: {
+              height: '90%',
+            },
+            style: {
+              height: 65,
+              backgroundColor: '#F7F7F8',
+            },
+          }}>
+          <Tab.Screen
+            name="main"
+            options={{
+              tabBarLabel: 'Меню',
+              tabBarIcon: ({color}) => <MainIcon fill={color} />,
+            }}
+            component={Main}
+          />
+          <Tab.Screen
+            name="basket"
+            options={{
+              tabBarLabel: 'Корзина',
+              tabBarIcon: ({color}) => <BasketIcon fill={color} />,
+            }}
+            component={Main}
+          />
+          <Tab.Screen
+            name="contacts"
+            options={{
+              tabBarLabel: 'Контакты',
+              tabBarIcon: ({color}) => <ContactIcon fill={color} />,
+            }}
+            component={Main}
+          />
+          <Tab.Screen
+            name="profile"
+            options={{
+              tabBarLabel: 'Профиль',
+              tabBarIcon: ({color}) => <ProfileIcon fill={color} />,
+            }}
+            component={Main}
+          />
+        </Tab.Navigator>
+      </NavigationContainer> */}
     </SafeAreaView>
   );
 };

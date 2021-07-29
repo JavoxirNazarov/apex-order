@@ -8,13 +8,19 @@ interface IPropsItem {
   active?: boolean;
 }
 
-export default function Item({text, source}: IPropsItem) {
+export default function Item({text, source, active = false}: IPropsItem) {
   return (
-    <TouchableOpacity style={styles.item}>
-      <View style={styles.iconContainer}>
+    <TouchableOpacity style={[styles.item, active ? styles.item_active : {}]}>
+      <View
+        style={[
+          styles.iconContainer,
+          active ? styles.iconContainer_active : {},
+        ]}>
         <Image source={source} />
       </View>
-      <Text style={styles.text}>{text}</Text>
+      <Text style={[styles.text, active ? styles.text_active : {}]}>
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -48,9 +54,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 12,
   },
+  iconContainer_active: {
+    backgroundColor: '#fff',
+  },
   text: {
     fontSize: 12,
     fontFamily: appStyles.FONT,
     color: appStyles.FONT_COLOR,
+  },
+  text_active: {
+    color: '#fff',
   },
 });

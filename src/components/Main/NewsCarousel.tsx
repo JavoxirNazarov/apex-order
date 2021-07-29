@@ -1,17 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, StyleSheet, View, Dimensions} from 'react-native';
-import defaultImage from '../../../assets/image/default.png';
+import defaultImage from '../../assets/image/default-news.png';
 import Carousel, {PaginationLight} from 'react-native-x2-carousel';
 
 const {width} = Dimensions.get('screen');
 
+type dataType = {
+  num: number;
+};
+
 export default function NewsCarousel() {
+  const [data, setData] = useState<dataType[]>([{num: 1}, {num: 2}]);
+
   return (
     <Carousel
       pagination={PaginationLight}
       autoplay
-      renderItem={() => (
-        <View style={styles.block}>
+      renderItem={(item: dataType) => (
+        <View key={item.num} style={styles.block}>
           <Image
             source={defaultImage}
             style={styles.img}
@@ -19,7 +25,7 @@ export default function NewsCarousel() {
           />
         </View>
       )}
-      data={[1, 2, 3]}
+      data={data}
     />
   );
 }
