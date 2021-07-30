@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Image, StyleSheet, View, Dimensions} from 'react-native';
 import defaultImage from '../../assets/image/default-news.png';
 import Carousel, {PaginationLight} from 'react-native-x2-carousel';
+import appStyles from '../../constants/styles';
 
 const {width} = Dimensions.get('screen');
 
@@ -33,7 +34,7 @@ export default function NewsCarousel() {
 const styles = StyleSheet.create({
   block: {
     width,
-    paddingHorizontal: 20,
+    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
   },
   img: {width: '100%', borderRadius: 20},
 });

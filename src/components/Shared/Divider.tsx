@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-export default function Divider() {
+export default memo(function Divider() {
   return (
     <LinearGradient
       colors={[
@@ -15,7 +15,7 @@ export default function Divider() {
       style={styles.divider}
     />
   );
-}
+});
 
 const styles = StyleSheet.create({
   divider: {

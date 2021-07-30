@@ -24,7 +24,7 @@ export default function FoodItem() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
     marginTop: 30,
     flexDirection: 'row',
   },

@@ -14,7 +14,8 @@ import MainIcon from './src/assets/icons/tabs/Main';
 import BasketIcon from './src/assets/icons/tabs/Basket';
 import ContactIcon from './src/assets/icons/tabs/Contacts';
 import ProfileIcon from './src/assets/icons/tabs/Profile';
-import Product from './src/screens/Product';
+// import Product from './src/screens/Product';
+import Basket from './src/screens/Basket';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,9 +25,8 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Product />
-      {/* <Main /> */}
-      {/* <NavigationContainer>
+      {/* <Product /> */}
+      <NavigationContainer>
         <Tab.Navigator
           tabBarOptions={{
             activeTintColor: appStyles.COLOR_PRIMARY,
@@ -54,7 +54,7 @@ const App = () => {
               tabBarLabel: 'Корзина',
               tabBarIcon: ({color}) => <BasketIcon fill={color} />,
             }}
-            component={Main}
+            component={Basket}
           />
           <Tab.Screen
             name="contacts"
@@ -73,7 +73,7 @@ const App = () => {
             component={Main}
           />
         </Tab.Navigator>
-      </NavigationContainer> */}
+      </NavigationContainer>
     </SafeAreaView>
   );
 };
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: '#F7F7F8',
   },
 });
 
