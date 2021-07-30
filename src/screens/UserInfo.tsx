@@ -7,6 +7,10 @@ import {UserStepsType} from '../constants/types';
 export default function UserInfo() {
   const [stepName, setStepName] = useState<UserStepsType>('PHONE');
 
+  // const [phone, setPhone] = useState('');
+  // const [code, setCode] = useState('');
+  // const [name, setName] = useState('');
+
   const StepComponent = useMemo(() => Steps[stepName], [stepName]);
 
   return (

@@ -13,5 +13,7 @@ export default function PaddWrapper({children}: PropTypes) {
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    width: '100%',
+    alignItems: 'center',
   },
 });

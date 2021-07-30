@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useRef} from 'react';
+import {useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import appStyles from '../../constants/styles';
 import {SetUserStepType} from '../../constants/types';
@@ -8,20 +9,69 @@ export type PhoneComponentProps = {
   setStepName: SetUserStepType;
 };
 
-export default function Phone({setStepName}: PhoneComponentProps) {
+export default function Code({setStepName}: PhoneComponentProps) {
   const handleStepName = () => setStepName('NAME');
+
+  const [focused, setFocused] = useState(0);
+  const ref0 = useRef<TextInput>(null);
+  const ref1 = useRef<TextInput>(null);
+  const ref2 = useRef<TextInput>(null);
+  const ref3 = useRef<TextInput>(null);
+
+  const [text, setText] = useState({0: '1', 1: '', 2: '', 3: ''});
+
+  const handleText = () => {};
 
   return (
     <UserInfoLayout handleStepName={handleStepName}>
       <>
         <Text style={styles.textContainer}>
-          <Text style={styles.text1}>Введите код</Text>
-          <Text style={[styles.text1, styles.text2]}> код</Text>
+          <Text style={styles.text1}>Введите </Text>
+          <Text style={[styles.text1, styles.text2]}>код</Text>
         </Text>
+        <View style={styles.subTextContainer}>
+          <Text style={styles.subText}>
+            Введите 4-значный код, который мы отправили на
+          </Text>
+          <Text style={[styles.subText, styles.subTextNumber]}>
+            +998 92 6542198
+          </Text>
+        </View>
         <View style={styles.inputContainer}>
-          <Text style={styles.inputText}>+998</Text>
-          <View style={styles.inputDivider} />
-          <TextInput style={[styles.inputText, styles.input]} />
+          <TextInput
+            ref={ref0}
+            value={text?.[0]}
+            autoFocus
+            onChange={() => {
+              ref1.current?.focus();
+            }}
+            onFocus={() => setFocused(0)}
+            style={[styles.input, focused === 0 ? styles.input_focused : {}]}
+          />
+          <TextInput
+            ref={ref1}
+            value={text?.[1]}
+            onFocus={() => setFocused(1)}
+            onChange={() => {
+              ref2.current?.focus();
+            }}
+            style={[styles.input, focused === 1 ? styles.input_focused : {}]}
+          />
+          <TextInput
+            ref={ref2}
+            value={text?.[2]}
+            onChange={() => {
+              ref3.current?.focus();
+            }}
+            onFocus={() => setFocused(2)}
+            style={[styles.input, focused === 2 ? styles.input_focused : {}]}
+          />
+          <TextInput
+            ref={ref3}
+            value={text?.[3]}
+            onFocus={() => setFocused(3)}
+            style={[styles.input, focused === 3 ? styles.input_focused : {}]}
+          />
         </View>
       </>
     </UserInfoLayout>
@@ -42,29 +92,45 @@ const styles = StyleSheet.create({
   text2: {
     color: appStyles.COLOR_PRIMARY,
   },
-  inputContainer: {
-    marginTop: 110,
-    height: 70,
-    flexDirection: 'row',
-    borderColor: appStyles.FONT_COLOR_SECONDARY,
-    borderWidth: 0.5,
-    borderRadius: 20,
+  subTextContainer: {
     alignItems: 'center',
+    marginTop: 11,
+    width: 155,
+  },
+  subText: {
+    lineHeight: 18,
+    fontSize: 12,
+    textAlign: 'center',
+    fontFamily: appStyles.FONT_REGULAR,
+    color: appStyles.FONT_COLOR_SECONDARY,
+  },
+  subTextNumber: {
+    lineHeight: 18,
+    textAlign: 'center',
+    fontFamily: appStyles.FONT_BOLDER,
+    color: appStyles.FONT_COLOR_SECONDARY,
+  },
+  inputContainer: {
+    width: '100%',
+    marginTop: 110,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
-  inputText: {
+  input: {
+    height: 60,
+    width: 60,
     fontFamily: appStyles.FONT,
     fontSize: 16,
     color: appStyles.FONT_COLOR,
+    borderColor: appStyles.FONT_COLOR_SECONDARY,
+    borderWidth: 0.5,
+    borderRadius: 10,
+    textAlign: 'center',
   },
-  input: {
-    flex: 1,
-    height: '100%',
-  },
-  inputDivider: {
-    height: 42,
-    width: 0.5,
-    backgroundColor: appStyles.FONT_COLOR_SECONDARY,
-    marginHorizontal: appStyles.HORIZONTAL_PADDING,
+  input_focused: {
+    color: appStyles.COLOR_PRIMARY,
+    borderColor: appStyles.COLOR_PRIMARY,
+    borderWidth: 2,
   },
 });
