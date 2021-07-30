@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowRadius: 20,
+    shadowOpacity: 1.0,
     elevation: 1,
   },
   item_active: {
