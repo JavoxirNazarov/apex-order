@@ -18,7 +18,7 @@ export default function ScrollLayoutWithBtn({children, btnText}: PropTypes) {
         {children}
       </ScrollView>
 
-      <AcceptFooter text={btnText} />
+      <AcceptFooter fixed text={btnText} />
     </View>
   );
 }

@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import appStyles from '../../constants/styles';
 
 type PropTypes = {
-  children: JSX.Element[];
+  children: JSX.Element;
 };
 
 export default function PaddWrapper({children}: PropTypes) {

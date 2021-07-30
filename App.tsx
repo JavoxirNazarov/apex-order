@@ -16,6 +16,7 @@ import ContactIcon from './src/assets/icons/tabs/Contacts';
 import ProfileIcon from './src/assets/icons/tabs/Profile';
 // import Product from './src/screens/Product';
 import Basket from './src/screens/Basket';
+import UserInfo from './src/screens/UserInfo';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +27,8 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       {/* <Product /> */}
-      <NavigationContainer>
+      <UserInfo />
+      {/* <NavigationContainer>
         <Tab.Navigator
           tabBarOptions={{
             activeTintColor: appStyles.COLOR_PRIMARY,
@@ -74,6 +76,7 @@ const App = () => {
           />
         </Tab.Navigator>
       </NavigationContainer>
+    */}
     </SafeAreaView>
   );
 };
