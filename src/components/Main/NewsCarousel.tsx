@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   block: {
     width,
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    backgroundColor: '#F7F7F8',
   },
   img: {width: '100%', borderRadius: 20},
 });

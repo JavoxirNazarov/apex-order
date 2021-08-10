@@ -6,9 +6,14 @@ import AcceptFooter from '../Shared/AcceptFooter';
 type PropTypes = {
   children: JSX.Element;
   btnText: string;
+  onBtnPress?: () => void;
 };
 
-export default function ScrollLayoutWithBtn({children, btnText}: PropTypes) {
+export default function ScrollLayoutWithBtn({
+  children,
+  btnText,
+  onBtnPress,
+}: PropTypes) {
   return (
     <View style={styles.container}>
       <ScrollView
@@ -18,7 +23,7 @@ export default function ScrollLayoutWithBtn({children, btnText}: PropTypes) {
         {children}
       </ScrollView>
 
-      <AcceptFooter fixed text={btnText} />
+      <AcceptFooter fixed text={btnText} onPress={onBtnPress} />
     </View>
   );
 }

@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import appStyles from '../../constants/styles';
 
 type PropTypes = {
-  children: JSX.Element;
+  children: React.ReactNode;
 };
 
 export default function PaddWrapper({children}: PropTypes) {
@@ -14,6 +14,5 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
     width: '100%',
-    alignItems: 'center',
   },
 });

@@ -5,6 +5,7 @@ import appStyles from '../constants/styles';
 import SwitchSelector from 'react-native-switch-selector';
 import TypePicker from '../components/Shared/TypePicker';
 import ScrollLayoutWithBtn from '../components/Layouts/ScrollLayoutWithBtn';
+import BackBtn from '../components/Shared/BackBtn';
 
 const options = [
   {label: '25 см', value: '25'},
@@ -15,11 +16,9 @@ const options = [
 export default function Product() {
   return (
     <ScrollLayoutWithBtn btnText="В КОРЗИНУ ЗА 73 000 сум">
-      <>
+      <View>
         <View style={styles.imageContainer}>
-          <TouchableOpacity style={styles.backBtn}>
-            <ArrowBackIcon />
-          </TouchableOpacity>
+          <BackBtn />
         </View>
 
         <View style={styles.wrapper}>
@@ -55,7 +54,7 @@ export default function Product() {
           <Text style={styles.saucesLabel}>Соусы</Text>
         </View>
         <TypePicker />
-      </>
+      </View>
     </ScrollLayoutWithBtn>
   );
 }
@@ -95,16 +94,5 @@ const styles = StyleSheet.create({
     fontFamily: appStyles.FONT,
     fontSize: 16,
     color: appStyles.FONT_COLOR,
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    position: 'absolute',
-    top: 20,
-    left: 20,
   },
 });

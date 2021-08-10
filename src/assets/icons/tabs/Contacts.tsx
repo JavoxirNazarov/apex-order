@@ -3,7 +3,7 @@ import Svg, {SvgProps, Path} from 'react-native-svg';
 
 function ContactIcon(props: SvgProps) {
   return (
-    <Svg width={19} height={22} viewBox="0 0 19 22" fill="none">
+    <Svg {...props} width={19} height={22} viewBox="0 0 19 22" fill="none">
       <Path
         fillRule="evenodd"
         clipRule="evenodd"

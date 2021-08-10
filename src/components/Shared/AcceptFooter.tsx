@@ -1,17 +1,27 @@
 import React, {memo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import appStyles from '../../constants/styles';
-import {SetUserStepType} from '../../constants/types';
 
 type PropsType = {
   text: string;
   fixed?: boolean;
   onPress: () => void;
+  children?: React.ReactNode;
 };
 
-export default memo(function AcceptFooter({text, fixed, onPress}: PropsType) {
+export default memo(function AcceptFooter({
+  text,
+  fixed,
+  onPress,
+  children,
+}: PropsType) {
   return (
-    <View style={fixed ? styles.acceptContainer_fixed : styles.acceptContainer}>
+    <View
+      style={[
+        styles.acceptContainer,
+        fixed ? styles.acceptContainer_fixed : {},
+      ]}>
+      {children}
       <TouchableOpacity onPress={onPress} style={styles.acceptBtn}>
         <Text style={styles.acceptBtnText}>{text}</Text>
       </TouchableOpacity>
@@ -24,19 +34,12 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     width: '100%',
     backgroundColor: '#F7F7F8',
-    height: 80,
     paddingVertical: 15,
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
   },
   acceptContainer_fixed: {
     position: 'absolute',
     bottom: 0,
-    marginTop: 'auto',
-    width: '100%',
-    backgroundColor: '#F7F7F8',
-    height: 80,
-    paddingVertical: 15,
-    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
     shadowColor: 'rgba(30, 27, 38, 0.05)',
     shadowRadius: 2,
     shadowOffset: {
@@ -48,7 +51,7 @@ const styles = StyleSheet.create({
   },
   acceptBtn: {
     flex: 1,
-    height: '100%',
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 200,

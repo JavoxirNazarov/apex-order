@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
   subTextContainer: {
     alignItems: 'center',
     marginTop: 11,
-    width: 155,
   },
   subText: {
+    width: 155,
     lineHeight: 18,
     fontSize: 12,
     textAlign: 'center',

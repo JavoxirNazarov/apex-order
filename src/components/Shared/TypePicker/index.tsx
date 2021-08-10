@@ -6,6 +6,7 @@ import pizzaImg from '../../../assets/image/categories/pizza.png';
 import waterImg from '../../../assets/image/categories/water.png';
 import snackImg from '../../../assets/image/categories/snack.png';
 import dessertImg from '../../../assets/image/categories/dessert.png';
+import appStyles from '../../../constants/styles';
 
 export default function TypePicker() {
   return (
@@ -25,8 +26,9 @@ export default function TypePicker() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 20,
+    width: '100%',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
+    paddingTop: 20,
   },
   content: {paddingHorizontal: 15},
 });

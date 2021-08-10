@@ -6,5 +6,6 @@ const appStyles = {
   FONT_REGULAR: 'Rubik-Regular',
   COLOR_PRIMARY: '#FF7C21',
   HORIZONTAL_PADDING: 20,
+  BACKGROUND_DEFAULT: '#F7F7F8',
 };
 export default appStyles;

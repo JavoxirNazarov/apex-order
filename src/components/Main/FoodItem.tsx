@@ -3,9 +3,13 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import defaultPizza from '../../assets/image/default-pizza.png';
 import appStyles from '../../constants/styles';
 
-export default function FoodItem() {
+type Props = {
+  onPress: () => void;
+};
+
+export default function FoodItem({onPress}: Props) {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={defaultPizza} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>Мангал (35 см)</Text>

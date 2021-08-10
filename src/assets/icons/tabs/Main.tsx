@@ -2,8 +2,6 @@ import * as React from 'react';
 import Svg, {SvgProps, Path} from 'react-native-svg';
 
 function MainIcon(props: SvgProps) {
-  console.log(props);
-
   return (
     <Svg width={19} height={19} viewBox="0 0 19 19" fill="none">
       <Path

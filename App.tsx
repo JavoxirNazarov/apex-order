@@ -1,91 +1,55 @@
-import React from 'react';
-
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   useColorScheme,
+  View,
 } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import appStyles from './src/constants/styles';
-import Main from './src/screens/Main';
-import MainIcon from './src/assets/icons/tabs/Main';
-import BasketIcon from './src/assets/icons/tabs/Basket';
-import ContactIcon from './src/assets/icons/tabs/Contacts';
-import ProfileIcon from './src/assets/icons/tabs/Profile';
-// import Product from './src/screens/Product';
-import Basket from './src/screens/Basket';
+import Home from './src/screens/Home';
+import Product from './src/screens/Product';
 import UserInfo from './src/screens/UserInfo';
-
-const Tab = createBottomTabNavigator();
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import appStyles from './src/constants/styles';
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
+  useEffect(() => {}, []);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      {/* <Product /> */}
-      <UserInfo />
-      {/* <NavigationContainer>
-        <Tab.Navigator
-          tabBarOptions={{
-            activeTintColor: appStyles.COLOR_PRIMARY,
-            inactiveTintColor: '#C1C1CC',
-            labelStyle: {fontSize: 12, fontFamily: appStyles.FONT},
-            tabStyle: {
-              height: '90%',
-            },
-            style: {
-              height: 65,
-              backgroundColor: '#F7F7F8',
-            },
-          }}>
-          <Tab.Screen
-            name="main"
-            options={{
-              tabBarLabel: 'Меню',
-              tabBarIcon: ({color}) => <MainIcon fill={color} />,
-            }}
-            component={Main}
-          />
-          <Tab.Screen
-            name="basket"
-            options={{
-              tabBarLabel: 'Корзина',
-              tabBarIcon: ({color}) => <BasketIcon fill={color} />,
-            }}
-            component={Basket}
-          />
-          <Tab.Screen
-            name="contacts"
-            options={{
-              tabBarLabel: 'Контакты',
-              tabBarIcon: ({color}) => <ContactIcon fill={color} />,
-            }}
-            component={Main}
-          />
-          <Tab.Screen
-            name="profile"
-            options={{
-              tabBarLabel: 'Профиль',
-              tabBarIcon: ({color}) => <ProfileIcon fill={color} />,
-            }}
-            component={Main}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    */}
+    <SafeAreaView style={styles.wrapper}>
+      <StatusBar
+        translucent
+        animated={true}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      />
+      <View style={styles.container}>
+        <BottomSheetModalProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen name="home" component={Home} />
+              <Stack.Screen name="product" component={Product} />
+              <Stack.Screen name="user-info" component={UserInfo} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </BottomSheetModalProvider>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
-    backgroundColor: '#F7F7F8',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
+  },
+  container: {
+    flex: 1,
   },
 });
 
