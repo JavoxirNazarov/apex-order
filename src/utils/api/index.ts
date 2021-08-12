@@ -1,10 +1,13 @@
 export const getResource = async (reqName: string) => {
   try {
-    const response = await fetch(`192.168.0.124/apex/hs/client/${reqName}`, {
-      headers: {
-        Authorization: 'Basic',
+    const response = await fetch(
+      `http://192.168.0.124/apex/hs/client/${reqName}`,
+      {
+        headers: {
+          Authorization: 'Basic Ym9zczox',
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       if (response.status === 500) {

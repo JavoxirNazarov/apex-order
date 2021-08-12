@@ -1,14 +1,14 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import appStyles from '../../constants/styles';
-import {SetUserStepType} from '../../constants/types';
+import { SetUserStepType } from '../../constants/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {
   setStepName: SetUserStepType;
 };
 
-export default function Phone({setStepName}: PhoneComponentProps) {
+export default function Phone({ setStepName }: PhoneComponentProps) {
   const handleStepName = () => setStepName('CODE');
 
   return (
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     marginTop: 110,
     height: 70,
     flexDirection: 'row',
-    borderColor: appStyles.FONT_COLOR_SECONDARY,
-    borderWidth: 0.5,
+    borderColor: 'rgba(30, 27, 38, 0.15)',
+    borderWidth: 1,
     borderRadius: 20,
     alignItems: 'center',
     paddingHorizontal: 20,

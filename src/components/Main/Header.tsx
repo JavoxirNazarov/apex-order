@@ -1,28 +1,25 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import BarIcon from '../../assets/icons/Bar';
 import CallIcon from '../../assets/icons/Call';
 import appStyles from '../../constants/styles';
+import Row from '../Shared/Row';
 
 export default function Header() {
   return (
-    <View style={styles.container}>
+    <Row containerStyle={styles.container}>
       <BarIcon />
       <Text style={styles.name}>apexpizza</Text>
       <CallIcon />
-    </View>
+    </Row>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
     height: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   name: {
     fontSize: 30,

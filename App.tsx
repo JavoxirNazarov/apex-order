@@ -1,6 +1,6 @@
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -11,8 +11,9 @@ import {
 import Home from './src/screens/Home';
 import Product from './src/screens/Product';
 import UserInfo from './src/screens/UserInfo';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import appStyles from './src/constants/styles';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -30,7 +31,11 @@ const App = () => {
       <View style={styles.container}>
         <BottomSheetModalProvider>
           <NavigationContainer>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: appStyles.BACKGROUND_DEFAULT },
+              }}>
               <Stack.Screen name="home" component={Home} />
               <Stack.Screen name="product" component={Product} />
               <Stack.Screen name="user-info" component={UserInfo} />
@@ -50,6 +55,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
 });
 

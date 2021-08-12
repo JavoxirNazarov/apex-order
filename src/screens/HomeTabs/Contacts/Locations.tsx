@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -13,24 +13,26 @@ import InstagramIcon from '../../../assets/icons/location/Instagram';
 import FacebookIcon from '../../../assets/icons/location/Facebook';
 import locationImg from '../../../assets/image/default-location.png';
 import ContactIcon from '../../../assets/icons/tabs/Contacts';
-import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import BottomSheetHandle from '../../../components/Shared/BottomSheetHandle';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import mapMarker from '../../../assets/icons/location/map-marker.png';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
-export default function Locations({navigation}: Props) {
+export default function Locations({ navigation }: Props) {
   const snapPoints = useMemo(() => ['15%', '40%', '70%'], []);
 
   const renderItem = useCallback(
-    ({item}) => (
+    ({ item }) => (
       <TouchableOpacity
         style={styles.imageWrapper}
-        onPress={() => navigation.navigate('home/contacts/location', {id: 1})}>
+        onPress={() =>
+          navigation.navigate('home/contacts/location', { id: 1 })
+        }>
         <ImageBackground style={styles.image} source={locationImg}>
           <LinearGradient
             colors={['rgba(19, 19, 19, 0)', '#131313']}
@@ -60,13 +62,13 @@ export default function Locations({navigation}: Props) {
           longitudeDelta: 0.1,
         }}>
         <Marker
-          coordinate={{latitude: 41.289357, longitude: 69.256}}
+          coordinate={{ latitude: 41.289357, longitude: 69.256 }}
           image={mapMarker}
           title={'bobur park'}
         />
       </MapView>
       <BottomSheet
-        handleComponent={() => <BottomSheetHandle backgroundColor="#fff" />}
+        handleComponent={BottomSheetHandle}
         index={0}
         snapPoints={snapPoints}>
         <BottomSheetFlatList
@@ -89,13 +91,13 @@ export default function Locations({navigation}: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#ccc'},
-  map: {flex: 1},
+  container: { flex: 1, backgroundColor: '#ccc' },
+  map: { flex: 1 },
   contentContainer: {
     width: '100%',
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
     paddingBottom: 120,
-    backgroundColor: '#fff',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   socialIcons: {
     flexDirection: 'row',

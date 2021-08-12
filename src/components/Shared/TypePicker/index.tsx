@@ -1,25 +1,46 @@
 import React from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import Item from './Item';
 
 import pizzaImg from '../../../assets/image/categories/pizza.png';
-import waterImg from '../../../assets/image/categories/water.png';
-import snackImg from '../../../assets/image/categories/snack.png';
-import dessertImg from '../../../assets/image/categories/dessert.png';
+// import waterImg from '../../../assets/image/categories/water.png';
+// import snackImg from '../../../assets/image/categories/snack.png';
+// import dessertImg from '../../../assets/image/categories/dessert.png';
 import appStyles from '../../../constants/styles';
+import { IGroup, ISauce, SettingState } from '../../../utils/types';
 
-export default function TypePicker() {
+type itemsType = IGroup[] | ISauce[] | string[] | undefined;
+
+type Props = {
+  itemList: itemsType;
+  setSelected: SettingState<string>;
+  selected: string;
+};
+
+export const checkAndGetItemUID = (item: IGroup | ISauce | string) => {
+  if (!item) return '';
+  if (typeof item === 'string') return item;
+  if ('UIDGroup' in item) return item.UIDGroup;
+  if ('UIDNomenclature' in item) return item.UIDNomenclature;
+  return '';
+};
+
+export default function TypePicker({ itemList, selected, setSelected }: Props) {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       style={styles.container}
       contentContainerStyle={styles.content}>
-      <Item text="Пицца" source={pizzaImg} active />
-      <Item text="Напитки" source={waterImg} />
-      <Item text="Закуски" source={snackImg} />
-      <Item text="Десерт" source={dessertImg} />
-      <Item text="Пицца" source={pizzaImg} />
+      {itemList?.map((el, i) => (
+        <Item
+          key={i}
+          info={el}
+          source={pizzaImg}
+          active={checkAndGetItemUID(el) === selected}
+          setSelected={setSelected}
+        />
+      ))}
     </ScrollView>
   );
 }
@@ -30,5 +51,5 @@ const styles = StyleSheet.create({
     backgroundColor: appStyles.BACKGROUND_DEFAULT,
     paddingTop: 20,
   },
-  content: {paddingHorizontal: 15},
+  content: { paddingHorizontal: 15 },
 });

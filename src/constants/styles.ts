@@ -1,4 +1,7 @@
+import { Dimensions } from 'react-native';
+
 const appStyles = {
+  SCREEN_WIDTH: Dimensions.get('screen').width,
   FONT_COLOR: '#1E1B26',
   FONT_COLOR_SECONDARY: 'rgba(30, 27, 38, 0.5)',
   FONT_BOLDER: 'Rubik-SemiBold',

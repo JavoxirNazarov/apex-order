@@ -1,15 +1,15 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import BackBtn from '../../../components/Shared/BackBtn';
 import PaddWrapper from '../../../components/Shared/PaddWrapper';
 import appStyles from '../../../constants/styles';
 
 type Props = {
-  route: {params: {id: string}};
+  route: { params: { id: string } };
 };
 
-export default function Location({route}: Props) {
-  const {id} = route.params;
+export default function Location({ route }: Props) {
+  const { id } = route.params;
   return (
     <View style={styles.container}>
       <View style={styles.img}>
@@ -27,7 +27,7 @@ export default function Location({route}: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1},
+  container: { flex: 1 },
   img: {
     position: 'relative',
     width: '100%',
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   name: {
     marginTop: 40,

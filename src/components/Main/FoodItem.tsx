@@ -1,24 +1,33 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import defaultPizza from '../../assets/image/default-pizza.png';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import appStyles from '../../constants/styles';
+import { IProductsItem } from '../../utils/types';
 
 type Props = {
-  onPress: () => void;
+  product: IProductsItem;
 };
 
-export default function FoodItem({onPress}: Props) {
+export default function FoodItem({ product }: Props) {
+  const navigation = useNavigation<any>();
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={defaultPizza} />
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        navigation.navigate('product', { UID: product.UIDProduct })
+      }>
+      <Image
+        source={{ uri: 'data:image/png;base64, ' + product.Image }}
+        style={styles.image}
+      />
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Мангал (35 см)</Text>
-        <Text style={styles.body}>
-          Оливковое масло, моцарелла, курица барбекю, фета, крем чиз, соус,
-          базилик, пармезан, чеснок.
-        </Text>
+        <Text style={styles.title}>{product.Product}</Text>
+        <Text style={styles.body}>{product.Description}</Text>
         <View style={styles.btn}>
-          <Text style={styles.btnText}>180 000 сум</Text>
+          <Text style={styles.btnText}>
+            {product?.Price?.toLocaleString()} сум
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -29,8 +38,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
     marginTop: 30,
     flexDirection: 'row',
+  },
+  image: {
+    width: 140,
+    height: 140,
   },
   textContainer: {
     flex: 1,

@@ -1,15 +1,16 @@
-import React, {useRef} from 'react';
-import {useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import React, { useRef } from 'react';
+import { useState } from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import appStyles from '../../constants/styles';
-import {SetUserStepType} from '../../constants/types';
+import { SetUserStepType } from '../../constants/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
+import Row from '../Shared/Row';
 
 export type PhoneComponentProps = {
   setStepName: SetUserStepType;
 };
 
-export default function Code({setStepName}: PhoneComponentProps) {
+export default function Code({ setStepName }: PhoneComponentProps) {
   const handleStepName = () => setStepName('NAME');
 
   const [focused, setFocused] = useState(0);
@@ -18,7 +19,7 @@ export default function Code({setStepName}: PhoneComponentProps) {
   const ref2 = useRef<TextInput>(null);
   const ref3 = useRef<TextInput>(null);
 
-  const [text, setText] = useState({0: '1', 1: '', 2: '', 3: ''});
+  const [text, setText] = useState({ 0: '1', 1: '', 2: '', 3: '' });
 
   const handleText = () => {};
 
@@ -37,7 +38,7 @@ export default function Code({setStepName}: PhoneComponentProps) {
             +998 92 6542198
           </Text>
         </View>
-        <View style={styles.inputContainer}>
+        <Row containerStyle={styles.inputContainer}>
           <TextInput
             ref={ref0}
             value={text?.[0]}
@@ -72,7 +73,7 @@ export default function Code({setStepName}: PhoneComponentProps) {
             onFocus={() => setFocused(3)}
             style={[styles.input, focused === 3 ? styles.input_focused : {}]}
           />
-        </View>
+        </Row>
       </>
     </UserInfoLayout>
   );
@@ -111,10 +112,7 @@ const styles = StyleSheet.create({
     color: appStyles.FONT_COLOR_SECONDARY,
   },
   inputContainer: {
-    width: '100%',
     marginTop: 110,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
   input: {
@@ -123,8 +121,8 @@ const styles = StyleSheet.create({
     fontFamily: appStyles.FONT,
     fontSize: 16,
     color: appStyles.FONT_COLOR,
-    borderColor: appStyles.FONT_COLOR_SECONDARY,
-    borderWidth: 0.5,
+    borderColor: 'rgba(30, 27, 38, 0.15)',
+    borderWidth: 1,
     borderRadius: 10,
     textAlign: 'center',
   },

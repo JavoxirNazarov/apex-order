@@ -1,6 +1,6 @@
-import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {VibrancyView} from '@react-native-community/blur';
-import React, {useCallback, useMemo, useRef} from 'react';
+import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { VibrancyView } from '@react-native-community/blur';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
   Image,
   ScrollView,
@@ -23,6 +23,7 @@ import AcceptFooter from '../../../components/Shared/AcceptFooter';
 import BottomSheetHandle from '../../../components/Shared/BottomSheetHandle';
 import PaddWrapper from '../../../components/Shared/PaddWrapper';
 import appStyles from '../../../constants/styles';
+import Row from '../../../components/Shared/Row';
 
 export default function Basket() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -39,14 +40,14 @@ export default function Basket() {
         onBtnPress={handlePresentModalPress}
         btnText="ОФОРМИТЬ ЗА 53 000 сум">
         <PaddWrapper>
-          <View style={{width: '100%'}}>
-            <View style={[styles.row, styles.header]}>
+          <View style={{ width: '100%' }}>
+            <Row containerStyle={styles.header}>
               <Text style={styles.title}>Корзина</Text>
               <PayIcon />
-            </View>
+            </Row>
 
             <View style={styles.listContainer}>
-              <View style={styles.item}>
+              <Row containerStyle={styles.item}>
                 <Image source={defaultImg} />
                 <View style={styles.itemBody}>
                   <Text style={styles.name}>Гавайская</Text>
@@ -57,18 +58,18 @@ export default function Basket() {
                   <Text style={styles.itemActionsNumber}>1</Text>
                   <PlusIcon />
                 </View>
-              </View>
+              </Row>
             </View>
 
-            <View style={styles.row}>
+            <Row containerStyle={styles.row}>
               <Text style={styles.name}>Доставка</Text>
               <Text style={styles.sum}>15 000 сум</Text>
-            </View>
+            </Row>
 
-            <View style={styles.row}>
+            <Row containerStyle={styles.row}>
               <Text style={styles.name}>Скидки</Text>
               <Text style={styles.sum}>0 сум</Text>
-            </View>
+            </Row>
           </View>
         </PaddWrapper>
       </ScrollLayoutWithBtn>
@@ -85,19 +86,19 @@ export default function Basket() {
         index={1}
         snapPoints={snapPoints}>
         <BottomSheetScrollView
-          contentContainerStyle={{paddingBottom: 150}}
+          contentContainerStyle={{ paddingBottom: 150 }}
           style={sheetStyles.container}
           showsVerticalScrollIndicator={false}>
           <PaddWrapper>
             <Text style={sheetStyles.headText}>Доставка</Text>
-            <View style={sheetStyles.addingBlock}>
+            <Row containerStyle={sheetStyles.addingBlock}>
               <Text style={sheetStyles.addingBlockText}>
                 Добавить адрес доставки
               </Text>
               <View style={sheetStyles.addingBlockBtn}>
                 <PlusBigIcon />
               </View>
-            </View>
+            </Row>
             <View style={sheetStyles.locationBlock}>
               <ContactIcon width={15} height={18} fill={appStyles.FONT_COLOR} />
               <Text style={sheetStyles.locationBlockText}>
@@ -127,10 +128,10 @@ export default function Basket() {
           </ScrollView>
         </BottomSheetScrollView>
         <AcceptFooter fixed text="ДОБАВИТЬ АДРЕС ДОСТАВКИ" onPress={() => {}}>
-          <View style={sheetStyles.footerRow}>
+          <Row>
             <Text style={sheetStyles.labelText}>Стоимость заказа</Text>
             <Text style={sheetStyles.labelText}>112 000 сум</Text>
-          </View>
+          </Row>
         </AcceptFooter>
       </BottomSheetModal>
     </>
@@ -145,9 +146,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.2,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginVertical: 10,
   },
   title: {
@@ -162,9 +160,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginVertical: 10,
   },
   itemBody: {
@@ -217,14 +212,10 @@ const sheetStyles = StyleSheet.create({
     marginBottom: 20,
   },
   addingBlock: {
-    width: '100%',
     height: 60,
     borderWidth: 0.5,
     borderRadius: 20,
     borderColor: appStyles.FONT_COLOR_SECONDARY,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 20,
   },
   addingBlockText: {
@@ -280,11 +271,5 @@ const sheetStyles = StyleSheet.create({
     backgroundColor: '#F2F2F4',
     borderRadius: 200,
     marginHorizontal: 5,
-  },
-  footerRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
 });

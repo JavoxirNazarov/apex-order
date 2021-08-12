@@ -1,6 +1,7 @@
-import React, {memo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { memo } from 'react';
+import { StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import appStyles from '../../constants/styles';
 
 export default memo(function Divider() {
   return (
@@ -11,8 +12,8 @@ export default memo(function Divider() {
           'rgba(30, 27, 38, 0.15)',
           'rgba(30, 27, 38, 0)',
         ]}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
         style={styles.divider}
       />
     </View>
@@ -21,7 +22,7 @@ export default memo(function Divider() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F7F7F8',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
     paddingTop: 20,
   },
   divider: {

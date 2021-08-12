@@ -1,5 +1,5 @@
-import React, {memo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { memo } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import appStyles from '../../constants/styles';
 
 type PropsType = {
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   acceptContainer: {
     marginTop: 'auto',
     width: '100%',
-    backgroundColor: '#F7F7F8',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
     paddingVertical: 15,
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
   },

@@ -1,16 +1,21 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { checkAndGetItemUID } from '.';
 import appStyles from '../../../constants/styles';
+import { IGroup, ISauce, SettingState } from '../../../utils/types';
 
-interface IPropsItem {
-  text: string;
+interface Props {
+  info: IGroup | ISauce | string;
   source: any;
   active?: boolean;
+  setSelected: SettingState<string>;
 }
 
-export default function Item({text, source, active = false}: IPropsItem) {
+export default function Item({ info, source, active, setSelected }: Props) {
   return (
-    <TouchableOpacity style={[styles.item, active ? styles.item_active : {}]}>
+    <TouchableOpacity
+      onPress={() => setSelected(checkAndGetItemUID(info))}
+      style={[styles.item, active ? styles.item_active : {}]}>
       <View
         style={[
           styles.iconContainer,
@@ -19,7 +24,7 @@ export default function Item({text, source, active = false}: IPropsItem) {
         <Image source={source} />
       </View>
       <Text style={[styles.text, active ? styles.text_active : {}]}>
-        {text}
+        {info?.Group || info?.Name || info}
       </Text>
     </TouchableOpacity>
   );
@@ -27,7 +32,7 @@ export default function Item({text, source, active = false}: IPropsItem) {
 
 const styles = StyleSheet.create({
   item: {
-    height: 116,
+    minHeight: 116,
     width: 73,
     alignItems: 'center',
     paddingVertical: 9,
@@ -62,6 +67,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: appStyles.FONT,
     color: appStyles.FONT_COLOR,
+    textAlign: 'center',
   },
   text_active: {
     color: '#fff',

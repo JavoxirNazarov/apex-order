@@ -1,17 +1,11 @@
-import {BottomSheetHandleProps} from '@gorhom/bottom-sheet';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import HandleIcon from '../../assets/icons/BottomSheetHandle';
+import appStyles from '../../constants/styles';
 
-type Props = {
-  backgroundColor?: string;
-};
-
-export default function BottomSheetHandle({
-  backgroundColor = '#F7F7F8',
-}: Props | BottomSheetHandleProps) {
+export default function BottomSheetHandle() {
   return (
-    <View style={[styles.handleContainer, {backgroundColor}]}>
+    <View style={styles.handleContainer}>
       <HandleIcon />
     </View>
   );
@@ -23,5 +17,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
 });

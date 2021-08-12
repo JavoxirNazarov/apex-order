@@ -1,73 +1,94 @@
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import ArrowBackIcon from '../assets/icons/ArrowBack';
-import appStyles from '../constants/styles';
+import React, { useEffect, useMemo, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import SwitchSelector from 'react-native-switch-selector';
-import TypePicker from '../components/Shared/TypePicker';
 import ScrollLayoutWithBtn from '../components/Layouts/ScrollLayoutWithBtn';
-import BackBtn from '../components/Shared/BackBtn';
+import PreviewPhoto from '../components/Shared/PreviewPhoto';
+import TypePicker from '../components/Shared/TypePicker';
+import appStyles from '../constants/styles';
+import { getResource } from '../utils/api';
+import { IProduct } from '../utils/types';
 
-const options = [
-  {label: '25 см', value: '25'},
-  {label: '30 см', value: '30'},
-  {label: '35 см', value: '35'},
-];
+type Props = {
+  navigation: any;
+  route: { params: { UID: string } };
+};
 
-export default function Product() {
+export default function Product({ route }: Props) {
+  const { UID } = route.params;
+  const [productInfo, setProductInfo] = useState<Partial<IProduct>>({});
+  // const [selectedSize, setSelectedSize] = useState('');
+  const [selectedSauce, setSelectedSauce] = useState('');
+  const [selectedAdditive, setSelectedAdditive] = useState('');
+
+  useEffect(() => {
+    getResource('productinfo?UIDProduct=' + UID)
+      .then(res => setProductInfo(res?.result))
+      .catch(err => console.log(err));
+  }, [UID]);
+
+  const sizeOptions = useMemo(() => {
+    return productInfo?.productInfo?.Sizes?.map(el => ({
+      label: el + ' см',
+      value: el,
+    }));
+  }, [productInfo]);
+
   return (
     <ScrollLayoutWithBtn btnText="В КОРЗИНУ ЗА 73 000 сум">
       <View>
-        <View style={styles.imageContainer}>
-          <BackBtn />
-        </View>
+        <PreviewPhoto base64={productInfo?.productInfo?.Image} />
 
         <View style={styles.wrapper}>
-          <Text style={styles.name}>Гавайская</Text>
-          <Text style={styles.size}>Маленькая 25 см</Text>
-          <Text style={styles.ingrdients}>
-            Цыпленок, Красный Соус, Моцарелла, Гауда, Ананасы
+          <Text style={styles.name}>{productInfo?.productInfo?.Product}</Text>
+          <Text style={styles.description}>
+            {productInfo?.productInfo?.Description}
           </Text>
 
-          <SwitchSelector
-            selectedColor="#fff"
-            textColor={appStyles.FONT_COLOR_SECONDARY}
-            buttonColor={appStyles.COLOR_PRIMARY}
-            hasPadding
-            height={50}
-            style={{marginTop: 20}}
-            borderColor="transparent"
-            valuePadding={5}
-            options={options}
-            initial={0}
-            onPress={(value: string) => {
-              console.log(`Call onPress with value: ${value}`);
-            }}
-          />
+          {!!sizeOptions?.length && (
+            <SwitchSelector
+              selectedColor="#fff"
+              textColor={appStyles.FONT_COLOR_SECONDARY}
+              buttonColor={appStyles.COLOR_PRIMARY}
+              hasPadding
+              height={50}
+              style={styles.select}
+              borderColor="transparent"
+              valuePadding={5}
+              options={sizeOptions}
+              initial={0}
+              onPress={(value: string) => {
+                console.log(`Call onPress with value: ${value}`);
+              }}
+            />
+          )}
         </View>
 
         <View style={styles.wrapper}>
           <Text style={styles.saucesLabel}>Добавка к пицце</Text>
         </View>
-        <TypePicker />
+        <TypePicker
+          itemList={productInfo?.productInfo?.Additives}
+          selected={selectedAdditive}
+          setSelected={setSelectedAdditive}
+        />
 
         <View style={styles.wrapper}>
           <Text style={styles.saucesLabel}>Соусы</Text>
         </View>
-        <TypePicker />
+        <TypePicker
+          itemList={productInfo?.productInfo?.Sauces}
+          selected={selectedSauce}
+          setSelected={setSelectedSauce}
+        />
       </View>
     </ScrollLayoutWithBtn>
   );
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    flex: 1,
-    height: 250,
-    backgroundColor: '#ccc',
-    position: 'relative',
-  },
   wrapper: {
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   name: {
     marginTop: 10,
@@ -75,13 +96,7 @@ const styles = StyleSheet.create({
     color: appStyles.FONT_COLOR,
     fontSize: 22,
   },
-  size: {
-    marginTop: 10,
-    fontFamily: appStyles.FONT_REGULAR,
-    color: 'rgba(30, 27, 38, 0.3)',
-    fontSize: 14,
-  },
-  ingrdients: {
+  description: {
     marginTop: 10,
     fontFamily: appStyles.FONT_REGULAR,
     color: appStyles.FONT_COLOR_SECONDARY,
@@ -89,6 +104,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     width: 217,
   },
+  select: { marginTop: 20 },
   saucesLabel: {
     marginTop: 20,
     fontFamily: appStyles.FONT,

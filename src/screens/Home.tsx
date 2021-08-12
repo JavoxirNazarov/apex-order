@@ -1,4 +1,4 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import BasketIcon from '../assets/icons/tabs/Basket';
 import ContactIcon from '../assets/icons/tabs/Contacts';
@@ -12,27 +12,38 @@ import Profile from './HomeTabs/Profile';
 
 const Tab = createBottomTabNavigator();
 
+const screenOptions = {
+  headerShown: false,
+  tabBarActiveTintColor: appStyles.COLOR_PRIMARY,
+  tabBarInactiveTintColor: '#C1C1CC',
+  tabBarLabelStyle: { fontSize: 12, fontFamily: appStyles.FONT },
+  tabBarItemStyle: {
+    height: '90%',
+  },
+  tabBarStyle: {
+    height: 65,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
+    shadowColor: 'rgba(30, 27, 38, 0.05)',
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: -1,
+    },
+    elevation: 1,
+    shadowOpacity: 1.0,
+  },
+};
+
 export default function Home() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: appStyles.COLOR_PRIMARY,
-        tabBarInactiveTintColor: '#C1C1CC',
-        tabBarLabelStyle: {fontSize: 12, fontFamily: appStyles.FONT},
-        tabBarItemStyle: {
-          height: '90%',
-        },
-        tabBarStyle: {
-          height: 65,
-          backgroundColor: '#F7F7F8',
-        },
-      }}>
+      sceneContainerStyle={{ backgroundColor: appStyles.BACKGROUND_DEFAULT }}
+      screenOptions={screenOptions}>
       <Tab.Screen
         name="home/main"
         options={{
           tabBarLabel: 'Меню',
-          tabBarIcon: ({color}) => <MainIcon fill={color} />,
+          tabBarIcon: ({ color }) => <MainIcon fill={color} />,
         }}
         component={Main}
       />
@@ -40,7 +51,7 @@ export default function Home() {
         name="home/basket"
         options={{
           tabBarLabel: 'Корзина',
-          tabBarIcon: ({color}) => <BasketIcon fill={color} />,
+          tabBarIcon: ({ color }) => <BasketIcon fill={color} />,
         }}
         component={Basket}
       />
@@ -48,7 +59,7 @@ export default function Home() {
         name="home/contacts"
         options={{
           tabBarLabel: 'Контакты',
-          tabBarIcon: ({color}) => <ContactIcon fill={color} />,
+          tabBarIcon: ({ color }) => <ContactIcon fill={color} />,
         }}
         component={Contacts}
       />
@@ -56,7 +67,7 @@ export default function Home() {
         name="home/profile"
         options={{
           tabBarLabel: 'Профиль',
-          tabBarIcon: ({color}) => <ProfileIcon fill={color} />,
+          tabBarIcon: ({ color }) => <ProfileIcon fill={color} />,
         }}
         component={Profile}
       />
