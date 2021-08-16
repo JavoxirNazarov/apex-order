@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import CencelIcon from '../../assets/icons/Cencel';
 import appStyles from '../../constants/styles';
 import AcceptFooter from '../Shared/AcceptFooter';
@@ -7,18 +7,24 @@ import PaddWrapper from '../Shared/PaddWrapper';
 
 type PropsType = {
   children: JSX.Element;
-  handleStepName: () => void;
+  handleNextStep: () => void;
+  onBackPress: () => void;
 };
 
-export default function UserInfoLayout({children, handleStepName}: PropsType) {
+export default function UserInfoLayout({
+  children,
+  handleNextStep,
+  onBackPress,
+}: PropsType) {
   return (
     <View style={styles.container}>
-      <View style={styles.backCircle}>
+      <TouchableOpacity onPress={onBackPress} style={styles.backCircle}>
         <CencelIcon />
-      </View>
+      </TouchableOpacity>
+
       <PaddWrapper>{children}</PaddWrapper>
 
-      <AcceptFooter onPress={handleStepName} text="ОФОРМИТЬ ЗА 53 000 сум" />
+      <AcceptFooter onPress={handleNextStep} text="Далее" />
     </View>
   );
 }
@@ -38,5 +44,6 @@ const styles = StyleSheet.create({
     left: appStyles.HORIZONTAL_PADDING,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
   },
 });

@@ -13,6 +13,7 @@ import Profile from './HomeTabs/Profile';
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
+  unmountOnBlur: true,
   headerShown: false,
   tabBarActiveTintColor: appStyles.COLOR_PRIMARY,
   tabBarInactiveTintColor: '#C1C1CC',
@@ -54,6 +55,7 @@ export default function Home() {
           tabBarIcon: ({ color }) => <BasketIcon fill={color} />,
         }}
         component={Basket}
+        initialParams={{ initialOrder: false }}
       />
       <Tab.Screen
         name="home/contacts"

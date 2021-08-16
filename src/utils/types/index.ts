@@ -27,16 +27,23 @@ export interface IPrice {
   label: string;
 }
 
+export interface IVariant {
+  Nomenclature: string;
+  Price: number;
+  UIDNomenclature: string;
+}
+
 export interface IProduct {
   isPizza: boolean;
   productInfo: {
     UIDProduct: string;
     Product: string;
     Description: string;
-    Sizes: string[];
+    Sizes: ['Маленькая', 'Средняя', 'Большая'];
     Additives: string[];
     Image: string;
     Sauces: ISauce[];
     Prices: IPrice[];
+    Variants: IVariant[];
   };
 }

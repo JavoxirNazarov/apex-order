@@ -6,7 +6,6 @@ import { IGroup, ISauce, SettingState } from '../../../utils/types';
 
 interface Props {
   info: IGroup | ISauce | string;
-  source: any;
   active?: boolean;
   setSelected: SettingState<string>;
 }
@@ -21,7 +20,10 @@ export default function Item({ info, source, active, setSelected }: Props) {
           styles.iconContainer,
           active ? styles.iconContainer_active : {},
         ]}>
-        <Image source={source} />
+        <Image
+          style={styles.image}
+          source={{ uri: 'data:image/png;base64,' + info?.Image }}
+        />
       </View>
       <Text style={[styles.text, active ? styles.text_active : {}]}>
         {info?.Group || info?.Name || info}
@@ -31,11 +33,15 @@ export default function Item({ info, source, active, setSelected }: Props) {
 }
 
 const styles = StyleSheet.create({
+  image: {
+    width: 30,
+    height: 30,
+  },
   item: {
     minHeight: 116,
     width: 73,
     alignItems: 'center',
-    paddingVertical: 9,
+    padding: 9,
     backgroundColor: '#fff',
     borderRadius: 100,
     marginHorizontal: 5,

@@ -1,94 +1,188 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import SwitchSelector from 'react-native-switch-selector';
+import { useQuery } from 'react-query';
+import { useDispatch } from 'react-redux';
 import ScrollLayoutWithBtn from '../components/Layouts/ScrollLayoutWithBtn';
+import PaddWrapper from '../components/Shared/PaddWrapper';
 import PreviewPhoto from '../components/Shared/PreviewPhoto';
+import QueryWrapper from '../components/Shared/QueryWrapper';
 import TypePicker from '../components/Shared/TypePicker';
 import appStyles from '../constants/styles';
+import { addToBasket } from '../redux/slices/basket-slice';
 import { getResource } from '../utils/api';
 import { IProduct } from '../utils/types';
 
 type Props = {
-  navigation: any;
+  navigation: NativeStackNavigationProp<any>;
   route: { params: { UID: string } };
 };
 
-export default function Product({ route }: Props) {
+export default function Product({ route, navigation }: Props) {
+  const dispatch = useDispatch();
   const { UID } = route.params;
-  const [productInfo, setProductInfo] = useState<Partial<IProduct>>({});
-  // const [selectedSize, setSelectedSize] = useState('');
+  const [selectedSize, setSelectedSize] = useState('Маленькая');
   const [selectedSauce, setSelectedSauce] = useState('');
   const [selectedAdditive, setSelectedAdditive] = useState('');
+  const [selectedVariantUID, setSelectedVariantUID] = useState('');
+
+  const { isLoading, isError, data } = useQuery<IProduct>(
+    ['product', UID],
+    async () => {
+      const response = await getResource('productinfo?UIDProduct=' + UID);
+      return response.result;
+    },
+    { enabled: !!UID },
+  );
 
   useEffect(() => {
-    getResource('productinfo?UIDProduct=' + UID)
-      .then(res => setProductInfo(res?.result))
-      .catch(err => console.log(err));
-  }, [UID]);
+    if (data && !data?.isPizza) {
+      setSelectedVariantUID(data?.productInfo?.Variants[0]?.UIDNomenclature);
+    }
+  }, [data]);
+
+  const variantOptions = useMemo(() => {
+    return (
+      data?.productInfo?.Variants?.map(el => ({
+        label: el.Nomenclature,
+        value: el.UIDNomenclature,
+      })) || []
+    );
+  }, [data]);
 
   const sizeOptions = useMemo(() => {
-    return productInfo?.productInfo?.Sizes?.map(el => ({
-      label: el + ' см',
+    const sizeToNumber = (sizeName: string) => {
+      switch (sizeName) {
+        case 'Маленькая':
+          return '25 см';
+        case 'Средняя':
+          return '30 см';
+        case 'Большая':
+          return '35 см';
+        default:
+          return '25 см';
+      }
+    };
+
+    return data?.productInfo?.Sizes?.map(el => ({
+      label: sizeToNumber(el),
       value: el,
     }));
-  }, [productInfo]);
+  }, [data]);
+
+  const Price = useMemo(() => {
+    if (data?.isPizza) {
+      const search = data?.productInfo?.Prices?.find(
+        el => el.label === `${selectedSize}&%&${selectedAdditive}`,
+      );
+      return search?.price || 0;
+    } else {
+      const search = data?.productInfo?.Variants?.find(
+        el => el.UIDNomenclature === selectedVariantUID,
+      );
+      return search?.Price || 0;
+    }
+  }, [selectedSize, selectedAdditive, data, selectedVariantUID]);
+
+  const addingToBasket = () => {
+    dispatch(
+      addToBasket({
+        Amount: 1,
+        Key: data?.isPizza ? `${selectedSize}&%&${selectedAdditive}` : '',
+        Price: Price,
+        Image: data?.productInfo?.Image,
+        UIDProduct: data?.isPizza
+          ? data?.productInfo?.UIDProduct
+          : selectedVariantUID,
+        Product: data?.productInfo?.Product,
+      }),
+    );
+    navigation.goBack();
+  };
 
   return (
-    <ScrollLayoutWithBtn btnText="В КОРЗИНУ ЗА 73 000 сум">
+    <ScrollLayoutWithBtn
+      btnText={`В КОРЗИНУ ЗА ${Price} сум`}
+      onBtnPress={addingToBasket}>
       <View>
-        <PreviewPhoto base64={productInfo?.productInfo?.Image} />
+        <PreviewPhoto base64={data?.productInfo?.Image} />
 
-        <View style={styles.wrapper}>
-          <Text style={styles.name}>{productInfo?.productInfo?.Product}</Text>
-          <Text style={styles.description}>
-            {productInfo?.productInfo?.Description}
-          </Text>
+        <QueryWrapper
+          isError={isError}
+          isLoading={isLoading}
+          indicatorSize="large"
+          IndicatorStyle={styles.feedbackMargin}
+          errorTextStyle={styles.feedbackMargin}>
+          <PaddWrapper>
+            <Text style={styles.name}>{data?.productInfo?.Product}</Text>
+            <Text style={styles.description}>
+              {data?.productInfo?.Description}
+            </Text>
+          </PaddWrapper>
+          {data?.isPizza ? (
+            <>
+              <PaddWrapper>
+                {!!sizeOptions?.length && (
+                  <SwitchSelector
+                    selectedColor="#fff"
+                    textColor={appStyles.FONT_COLOR_SECONDARY}
+                    buttonColor={appStyles.COLOR_PRIMARY}
+                    hasPadding
+                    height={50}
+                    style={styles.select}
+                    borderColor="transparent"
+                    valuePadding={5}
+                    options={sizeOptions}
+                    initial={0}
+                    onPress={(value: string) => setSelectedSize(value)}
+                  />
+                )}
 
-          {!!sizeOptions?.length && (
-            <SwitchSelector
-              selectedColor="#fff"
-              textColor={appStyles.FONT_COLOR_SECONDARY}
-              buttonColor={appStyles.COLOR_PRIMARY}
-              hasPadding
-              height={50}
-              style={styles.select}
-              borderColor="transparent"
-              valuePadding={5}
-              options={sizeOptions}
-              initial={0}
-              onPress={(value: string) => {
-                console.log(`Call onPress with value: ${value}`);
-              }}
-            />
+                <Text style={styles.saucesLabel}>Добавка к пицце</Text>
+              </PaddWrapper>
+              <TypePicker
+                itemList={data?.productInfo?.Additives}
+                selected={selectedAdditive}
+                setSelected={setSelectedAdditive}
+              />
+              <PaddWrapper>
+                <Text style={styles.saucesLabel}>Соусы</Text>
+              </PaddWrapper>
+              <TypePicker
+                itemList={data?.productInfo?.Sauces}
+                selected={selectedSauce}
+                setSelected={setSelectedSauce}
+              />
+            </>
+          ) : (
+            <PaddWrapper>
+              {variantOptions?.length > 1 && (
+                <SwitchSelector
+                  selectedColor="#fff"
+                  textColor={appStyles.FONT_COLOR_SECONDARY}
+                  buttonColor={appStyles.COLOR_PRIMARY}
+                  hasPadding
+                  height={50}
+                  style={styles.select}
+                  borderColor="transparent"
+                  valuePadding={5}
+                  options={variantOptions}
+                  initial={0}
+                  onPress={(value: string) => setSelectedVariantUID(value)}
+                />
+              )}
+            </PaddWrapper>
           )}
-        </View>
-
-        <View style={styles.wrapper}>
-          <Text style={styles.saucesLabel}>Добавка к пицце</Text>
-        </View>
-        <TypePicker
-          itemList={productInfo?.productInfo?.Additives}
-          selected={selectedAdditive}
-          setSelected={setSelectedAdditive}
-        />
-
-        <View style={styles.wrapper}>
-          <Text style={styles.saucesLabel}>Соусы</Text>
-        </View>
-        <TypePicker
-          itemList={productInfo?.productInfo?.Sauces}
-          selected={selectedSauce}
-          setSelected={setSelectedSauce}
-        />
+        </QueryWrapper>
       </View>
     </ScrollLayoutWithBtn>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
-    backgroundColor: appStyles.BACKGROUND_DEFAULT,
+  feedbackMargin: {
+    marginTop: 150,
   },
   name: {
     marginTop: 10,

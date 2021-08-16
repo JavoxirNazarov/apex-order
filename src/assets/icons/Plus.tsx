@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Svg, {SvgProps, Circle, Rect} from 'react-native-svg';
+import Svg, { SvgProps, Circle, Rect } from 'react-native-svg';
 
 function PlusIcon(props: SvgProps) {
   return (

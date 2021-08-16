@@ -1,18 +1,28 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import appStyles from '../../constants/styles';
 import { SetUserStepType } from '../../constants/types';
+import { SettingState } from '../../utils/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {
   setStepName: SetUserStepType;
+  phone: string;
+  setPhone: SettingState<string>;
 };
 
-export default function Phone({ setStepName }: PhoneComponentProps) {
-  const handleStepName = () => setStepName('CODE');
+export default function Phone({
+  setStepName,
+  phone,
+  setPhone,
+}: PhoneComponentProps) {
+  const navigation = useNavigation();
+  const handleNextStep = () => setStepName('CODE');
+  const goBack = () => navigation.goBack();
 
   return (
-    <UserInfoLayout handleStepName={handleStepName}>
+    <UserInfoLayout handleNextStep={handleNextStep} onBackPress={goBack}>
       <>
         <Text style={styles.textContainer}>
           <Text style={styles.text1}>Для оформления заказа</Text>
@@ -21,7 +31,11 @@ export default function Phone({ setStepName }: PhoneComponentProps) {
         <View style={styles.inputContainer}>
           <Text style={styles.inputText}>+998</Text>
           <View style={styles.inputDivider} />
-          <TextInput style={[styles.inputText, styles.input]} />
+          <TextInput
+            onChangeText={setPhone}
+            defaultValue={phone}
+            style={[styles.inputText, styles.input]}
+          />
         </View>
       </>
     </UserInfoLayout>

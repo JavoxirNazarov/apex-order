@@ -2,11 +2,11 @@ import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
 type Props = {
-  children: JSX.Element[];
+  children: JSX.Element[] | JSX.Element;
   containerStyle?: ViewStyle;
 };
 
-export default function Row({ children, containerStyle = {} }: Props) {
+export default function Row({ children, containerStyle }: Props) {
   return <View style={[styles.row, containerStyle]}>{children}</View>;
 }
 

@@ -1,31 +1,29 @@
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   useColorScheme,
   View,
+  SafeAreaView,
 } from 'react-native';
+import appStyles from './src/constants/styles';
 import Home from './src/screens/Home';
 import Product from './src/screens/Product';
 import UserInfo from './src/screens/UserInfo';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import appStyles from './src/constants/styles';
+import FlashMessage from 'react-native-flash-message';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  useEffect(() => {}, []);
-
   return (
     <SafeAreaView style={styles.wrapper}>
       <StatusBar
         translucent
-        animated={true}
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
       <View style={styles.container}>
@@ -42,6 +40,7 @@ const App = () => {
             </Stack.Navigator>
           </NavigationContainer>
         </BottomSheetModalProvider>
+        <FlashMessage position="top" />
       </View>
     </SafeAreaView>
   );
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
-    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   container: {
     flex: 1,

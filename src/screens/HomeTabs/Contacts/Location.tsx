@@ -1,26 +1,51 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { useQuery } from 'react-query';
 import BackBtn from '../../../components/Shared/BackBtn';
 import PaddWrapper from '../../../components/Shared/PaddWrapper';
+import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import appStyles from '../../../constants/styles';
+import { getResource } from '../../../utils/api';
 
 type Props = {
   route: { params: { id: string } };
 };
 
+type AddressType = {
+  Address: string;
+  ShiftStarts: string;
+  ShiftEnds: string;
+  Image: string;
+  Structure: string;
+};
+
 export default function Location({ route }: Props) {
   const { id } = route.params;
+  const { data, isError, isLoading } = useQuery<AddressType>(
+    ['adresses', id],
+    async () => {
+      const response = await getResource('pizzerias?UIDStructure=' + id);
+      return response?.result;
+    },
+  );
+
   return (
     <View style={styles.container}>
-      <View style={styles.img}>
+      <ImageBackground
+        style={styles.img}
+        source={{ uri: 'data:image/png;base64, ' + data?.Image }}>
         <BackBtn />
-      </View>
+      </ImageBackground>
       <View style={styles.textBlock}>
-        <PaddWrapper>
-          <Text style={styles.name}>Фергана йоли {id}</Text>
-          <Text style={styles.address}>22, Фергана йоли, 95А/2, 20д, 6к</Text>
-          <Text style={styles.time}>с 7:00 - до 3:30</Text>
-        </PaddWrapper>
+        <QueryWrapper isError={isError} isLoading={isLoading}>
+          <PaddWrapper>
+            <Text style={styles.name}>{data?.Structure}</Text>
+            <Text style={styles.address}>{data?.Address}</Text>
+            <Text style={styles.time}>
+              с {data?.ShiftStarts} - до {data?.ShiftEnds}
+            </Text>
+          </PaddWrapper>
+        </QueryWrapper>
       </View>
     </View>
   );

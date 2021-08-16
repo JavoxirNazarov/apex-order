@@ -1,30 +1,34 @@
 import React, { useRef } from 'react';
-import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import appStyles from '../../constants/styles';
 import { SetUserStepType } from '../../constants/types';
+import { SettingState } from '../../utils/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
-import Row from '../Shared/Row';
 
 export type PhoneComponentProps = {
   setStepName: SetUserStepType;
+  code: string;
+  setCode: SettingState<string>;
 };
 
-export default function Code({ setStepName }: PhoneComponentProps) {
-  const handleStepName = () => setStepName('NAME');
+export default function Code({
+  setStepName,
+  code,
+  setCode,
+}: PhoneComponentProps) {
+  const handleNextStep = () => setStepName('NAME');
+  const onBackPress = () => setStepName('PHONE');
 
-  const [focused, setFocused] = useState(0);
-  const ref0 = useRef<TextInput>(null);
-  const ref1 = useRef<TextInput>(null);
-  const ref2 = useRef<TextInput>(null);
-  const ref3 = useRef<TextInput>(null);
+  const pinRef = useRef(null);
 
-  const [text, setText] = useState({ 0: '1', 1: '', 2: '', 3: '' });
-
-  const handleText = () => {};
+  const handlingCode = (val: string) => {
+    if (val === '1234') handleNextStep();
+    setCode(val);
+  };
 
   return (
-    <UserInfoLayout handleStepName={handleStepName}>
+    <UserInfoLayout handleNextStep={handleNextStep} onBackPress={onBackPress}>
       <>
         <Text style={styles.textContainer}>
           <Text style={styles.text1}>Введите </Text>
@@ -38,42 +42,20 @@ export default function Code({ setStepName }: PhoneComponentProps) {
             +998 92 6542198
           </Text>
         </View>
-        <Row containerStyle={styles.inputContainer}>
-          <TextInput
-            ref={ref0}
-            value={text?.[0]}
-            autoFocus
-            onChange={() => {
-              ref1.current?.focus();
-            }}
-            onFocus={() => setFocused(0)}
-            style={[styles.input, focused === 0 ? styles.input_focused : {}]}
-          />
-          <TextInput
-            ref={ref1}
-            value={text?.[1]}
-            onFocus={() => setFocused(1)}
-            onChange={() => {
-              ref2.current?.focus();
-            }}
-            style={[styles.input, focused === 1 ? styles.input_focused : {}]}
-          />
-          <TextInput
-            ref={ref2}
-            value={text?.[2]}
-            onChange={() => {
-              ref3.current?.focus();
-            }}
-            onFocus={() => setFocused(2)}
-            style={[styles.input, focused === 2 ? styles.input_focused : {}]}
-          />
-          <TextInput
-            ref={ref3}
-            value={text?.[3]}
-            onFocus={() => setFocused(3)}
-            style={[styles.input, focused === 3 ? styles.input_focused : {}]}
-          />
-        </Row>
+
+        <SmoothPinCodeInput
+          ref={pinRef}
+          value={code}
+          onTextChange={handlingCode}
+          cellStyle={styles.input}
+          cellStyleFocused={styles.input_focused}
+          textStyle={styles.inputText}
+          textStyleFocused={styles.inputText_focused}
+          containerStyle={styles.inputContainer}
+          cellSpacing={10}
+          restrictToNumbers
+          autoFocus
+        />
       </>
     </UserInfoLayout>
   );
@@ -113,22 +95,26 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginTop: 110,
-    paddingHorizontal: 20,
+    width: '100%',
   },
   input: {
     height: 60,
     width: 60,
-    fontFamily: appStyles.FONT,
-    fontSize: 16,
-    color: appStyles.FONT_COLOR,
     borderColor: 'rgba(30, 27, 38, 0.15)',
     borderWidth: 1,
     borderRadius: 10,
+  },
+  inputText: {
+    fontFamily: appStyles.FONT,
+    fontSize: 16,
+    color: appStyles.FONT_COLOR,
     textAlign: 'center',
   },
   input_focused: {
-    color: appStyles.COLOR_PRIMARY,
     borderColor: appStyles.COLOR_PRIMARY,
     borderWidth: 2,
+  },
+  inputText_focused: {
+    color: appStyles.COLOR_PRIMARY,
   },
 });

@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { StyleSheet, View, Animated, TextInput } from 'react-native';
 import appStyles from '../../constants/styles';
 import { SettingState } from '../../utils/types';
 
 type Props = {
-  setText: SettingState<string>;
+  setText: SettingState<string> | ((text: string) => void);
   text: string;
   labelText: string;
 };
@@ -12,13 +12,18 @@ type Props = {
 export default function AnimatedInput({ setText, text, labelText }: Props) {
   const labelAnimation = useRef(new Animated.Value(0)).current;
 
-  const focusing = (focusingVal: boolean) => {
+  const focusing = (focusingVal?: boolean) => {
     Animated.timing(labelAnimation, {
       toValue: focusingVal ? -35 : 0,
       duration: 300,
       useNativeDriver: true,
     }).start();
   };
+
+  useLayoutEffect(() => {
+    if (text) focusing(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!text]);
 
   return (
     <View style={styles.inputContainer}>
@@ -37,6 +42,7 @@ export default function AnimatedInput({ setText, text, labelText }: Props) {
         onBlur={() => {
           if (!text) focusing(false);
         }}
+        defaultValue={text}
         onChangeText={setText}
       />
     </View>

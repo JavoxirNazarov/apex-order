@@ -2,7 +2,6 @@ import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import Item from './Item';
 
-import pizzaImg from '../../../assets/image/categories/pizza.png';
 // import waterImg from '../../../assets/image/categories/water.png';
 // import snackImg from '../../../assets/image/categories/snack.png';
 // import dessertImg from '../../../assets/image/categories/dessert.png';
@@ -36,7 +35,6 @@ export default function TypePicker({ itemList, selected, setSelected }: Props) {
         <Item
           key={i}
           info={el}
-          source={pizzaImg}
           active={checkAndGetItemUID(el) === selected}
           setSelected={setSelected}
         />

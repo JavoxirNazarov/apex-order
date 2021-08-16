@@ -11,37 +11,58 @@ import LinearGradient from 'react-native-linear-gradient';
 import TwitterIcon from '../../../assets/icons/location/Twitter';
 import InstagramIcon from '../../../assets/icons/location/Instagram';
 import FacebookIcon from '../../../assets/icons/location/Facebook';
-import locationImg from '../../../assets/image/default-location.png';
 import ContactIcon from '../../../assets/icons/tabs/Contacts';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import BottomSheetHandle from '../../../components/Shared/BottomSheetHandle';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import mapMarker from '../../../assets/icons/location/map-marker.png';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQuery } from 'react-query';
+import { getResource } from '../../../utils/api';
+import QueryWrapper from '../../../components/Shared/QueryWrapper';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
+type AdressesType = {
+  UIDStructure: string;
+  Structure: string;
+  Address: string;
+  Image: string;
+  Lat: number;
+  Lon: number;
+};
+
 export default function Locations({ navigation }: Props) {
-  const snapPoints = useMemo(() => ['15%', '40%', '70%'], []);
+  const { data, isError, isLoading } = useQuery<AdressesType[]>(
+    'adresses',
+    async () => {
+      const response = await getResource('pizzerias');
+      return response?.result;
+    },
+  );
+
+  const snapPoints = useMemo(() => ['35%', '70%'], []);
 
   const renderItem = useCallback(
-    ({ item }) => (
+    ({ item }: { item: AdressesType }) => (
       <TouchableOpacity
         style={styles.imageWrapper}
         onPress={() =>
-          navigation.navigate('home/contacts/location', { id: 1 })
+          navigation.navigate('home/contacts/location', {
+            id: item.UIDStructure,
+          })
         }>
-        <ImageBackground style={styles.image} source={locationImg}>
+        <ImageBackground
+          style={styles.image}
+          source={{ uri: 'data:image/png;base64, ' + item?.Image }}>
           <LinearGradient
             colors={['rgba(19, 19, 19, 0)', '#131313']}
             style={styles.gradientBlock}>
             <View style={styles.imgTextWrapper}>
               <ContactIcon fill="#FFFFFF" />
-              <Text style={styles.imgText}>
-                22, Фергана йоли, 95А/2, 20д, {item}к
-              </Text>
+              <Text style={styles.imgText}>{item.Address}</Text>
             </View>
           </LinearGradient>
         </ImageBackground>
@@ -61,11 +82,14 @@ export default function Locations({ navigation }: Props) {
           latitudeDelta: 0.1,
           longitudeDelta: 0.1,
         }}>
-        <Marker
-          coordinate={{ latitude: 41.289357, longitude: 69.256 }}
-          image={mapMarker}
-          title={'bobur park'}
-        />
+        {data?.map((el, i) => (
+          <Marker
+            key={i}
+            coordinate={{ latitude: el?.Lat, longitude: el?.Lon }}
+            image={mapMarker}
+            title={el?.Structure}
+          />
+        ))}
       </MapView>
       <BottomSheet
         handleComponent={BottomSheetHandle}
@@ -74,15 +98,18 @@ export default function Locations({ navigation }: Props) {
         <BottomSheetFlatList
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={() => (
-            <View style={styles.socialIcons}>
-              <TwitterIcon />
-              <InstagramIcon style={styles.iconSpacing} />
-              <FacebookIcon />
-            </View>
+            <QueryWrapper isError={isError} isLoading={isLoading}>
+              <View style={styles.socialIcons}>
+                <TwitterIcon />
+                <InstagramIcon style={styles.iconSpacing} />
+                <FacebookIcon />
+              </View>
+            </QueryWrapper>
           )}
-          data={[1, 2, 3]}
-          keyExtractor={i => i.toString()}
+          data={data}
+          keyExtractor={(_, i) => i.toString()}
           renderItem={renderItem}
+          style={styles.sheetContainer}
           contentContainerStyle={styles.contentContainer}
         />
       </BottomSheet>
@@ -93,11 +120,14 @@ export default function Locations({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ccc' },
   map: { flex: 1 },
+  sheetContainer: {
+    flex: 1,
+    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
+  },
   contentContainer: {
     width: '100%',
-    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
     paddingBottom: 120,
-    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   socialIcons: {
     flexDirection: 'row',

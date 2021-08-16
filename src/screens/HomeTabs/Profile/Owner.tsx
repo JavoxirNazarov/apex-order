@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -16,8 +16,20 @@ import SettingsIcon from '../../../assets/icons/profile/Settings';
 import ClockIcon from '../../../assets/icons/profile/Clock';
 import ArrowIcon from '../../../assets/icons/Arrow';
 import ContactIcon from '../../../assets/icons/tabs/Contacts';
+import { useFocusEffect } from '@react-navigation/native';
+import { getLocalData } from '../../../utils/helpers/localStorage';
 
 export default function Owner({ navigation }: any) {
+  const [registered, setRegistered] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      getLocalData('@USER_INFO').then(user => {
+        setRegistered(user !== null);
+      });
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.imgBlock}>
@@ -37,24 +49,38 @@ export default function Owner({ navigation }: any) {
       <View style={styles.textBlock}>
         <BottomSheetHandle />
         <PaddWrapper>
-          <TouchableOpacity
-            style={styles.row}
-            onPress={() => navigation.navigate('home/profile/history')}>
-            <View style={styles.rowIconWraper}>
-              <ClockIcon />
-            </View>
-            <Text style={styles.name}>История заказов</Text>
-            <ArrowIcon style={styles.arrowRight} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.row}
-            onPress={() => navigation.navigate('home/profile/addresses')}>
-            <View style={styles.rowIconWraper}>
-              <ContactIcon width={15.3} height={18} fill="#1E1B26" />
-            </View>
-            <Text style={styles.name}>Адреса доставки</Text>
-            <ArrowIcon style={styles.arrowRight} />
-          </TouchableOpacity>
+          {registered ? (
+            <>
+              <TouchableOpacity
+                style={styles.row}
+                onPress={() => navigation.navigate('home/profile/history')}>
+                <View style={styles.rowIconWraper}>
+                  <ClockIcon />
+                </View>
+                <Text style={styles.name}>История заказов</Text>
+                <ArrowIcon style={styles.arrowRight} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.row}
+                onPress={() => navigation.navigate('home/profile/addresses')}>
+                <View style={styles.rowIconWraper}>
+                  <ContactIcon width={15.3} height={18} fill="#1E1B26" />
+                </View>
+                <Text style={styles.name}>Адреса доставки</Text>
+                <ArrowIcon style={styles.arrowRight} />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => navigation.navigate('user-info')}>
+              <View style={styles.rowIconWraper}>
+                <ContactIcon width={15.3} height={18} fill="#1E1B26" />
+              </View>
+              <Text style={styles.name}>Зарегистрироватся</Text>
+              <ArrowIcon style={styles.arrowRight} />
+            </TouchableOpacity>
+          )}
         </PaddWrapper>
       </View>
     </View>

@@ -1,7 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import basketState from './slices/basket-slice';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    basketState,
+  },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

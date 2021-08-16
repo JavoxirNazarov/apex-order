@@ -1,6 +1,6 @@
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { VibrancyView } from '@react-native-community/blur';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Image,
   ScrollView,
@@ -17,48 +17,79 @@ import MinusIcon from '../../../assets/icons/Minus';
 import PlusIcon from '../../../assets/icons/Plus';
 import PayIcon from '../../../assets/icons/Play';
 import ContactIcon from '../../../assets/icons/tabs/Contacts';
-import defaultImg from '../../../assets/image/basket-default.png';
 import ScrollLayoutWithBtn from '../../../components/Layouts/ScrollLayoutWithBtn';
 import AcceptFooter from '../../../components/Shared/AcceptFooter';
 import BottomSheetHandle from '../../../components/Shared/BottomSheetHandle';
 import PaddWrapper from '../../../components/Shared/PaddWrapper';
 import appStyles from '../../../constants/styles';
 import Row from '../../../components/Shared/Row';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import {
+  decrementProduct,
+  incrementProduct,
+} from '../../../redux/slices/basket-slice';
+import { getLocalData } from '../../../utils/helpers/localStorage';
 
-export default function Basket() {
+export default function Basket({ navigation, route }: any) {
+  const dispatch = useDispatch();
+  const { initialOrder } = route?.params;
+  const { products } = useSelector((state: RootState) => state.basketState);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const snapPoints = useMemo(() => ['45%', '60%'], []);
 
+  useEffect(() => {
+    if (initialOrder) bottomSheetModalRef.current?.present();
+  }, [initialOrder]);
+
   const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
+    getLocalData('@USER_INFO').then(value => {
+      if (value !== null) {
+        bottomSheetModalRef.current?.present();
+      } else {
+        navigation.navigate('user-info');
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const orderPrice = useMemo(() => {
+    return products.reduce((acc, curr) => {
+      return acc + curr.Amount * curr.Price;
+    }, 0);
+  }, [products]);
 
   return (
     <>
       <ScrollLayoutWithBtn
         onBtnPress={handlePresentModalPress}
-        btnText="ОФОРМИТЬ ЗА 53 000 сум">
+        btnText={`ОФОРМИТЬ ЗА ${orderPrice} сум`}>
         <PaddWrapper>
-          <View style={{ width: '100%' }}>
+          <View style={styles.container}>
             <Row containerStyle={styles.header}>
               <Text style={styles.title}>Корзина</Text>
               <PayIcon />
             </Row>
 
             <View style={styles.listContainer}>
-              <Row containerStyle={styles.item}>
-                <Image source={defaultImg} />
-                <View style={styles.itemBody}>
-                  <Text style={styles.name}>Гавайская</Text>
-                  <Text style={styles.price}>53 000 сум</Text>
-                </View>
-                <View style={styles.itemActions}>
-                  <MinusIcon />
-                  <Text style={styles.itemActionsNumber}>1</Text>
-                  <PlusIcon />
-                </View>
-              </Row>
+              {products.map((el, i) => (
+                <Row key={i} containerStyle={styles.item}>
+                  <Image
+                    style={styles.itemImage}
+                    source={{ uri: 'data:image/png;base64, ' + el?.Image }}
+                  />
+                  <View style={styles.itemBody}>
+                    <Text style={styles.name}>{el.Product}</Text>
+                    <Text style={styles.price}>{el?.Price} сум</Text>
+                  </View>
+                  <View style={styles.itemActions}>
+                    <MinusIcon onPress={() => dispatch(decrementProduct(i))} />
+                    <Text style={styles.itemActionsNumber}>{el.Amount}</Text>
+                    <PlusIcon onPress={() => dispatch(incrementProduct(i))} />
+                  </View>
+                </Row>
+              ))}
             </View>
 
             <Row containerStyle={styles.row}>
@@ -127,7 +158,7 @@ export default function Basket() {
             </TouchableOpacity>
           </ScrollView>
         </BottomSheetScrollView>
-        <AcceptFooter fixed text="ДОБАВИТЬ АДРЕС ДОСТАВКИ" onPress={() => {}}>
+        <AcceptFooter fixed text="ОФОРМИТЬ ЗАКАЗ" onPress={() => {}}>
           <Row>
             <Text style={sheetStyles.labelText}>Стоимость заказа</Text>
             <Text style={sheetStyles.labelText}>112 000 сум</Text>
@@ -139,6 +170,9 @@ export default function Basket() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
   header: {
     marginTop: 32,
     paddingBottom: 20,
@@ -161,6 +195,10 @@ const styles = StyleSheet.create({
   },
   item: {
     marginVertical: 10,
+  },
+  itemImage: {
+    width: 80,
+    height: 80,
   },
   itemBody: {
     flex: 1,

@@ -7,7 +7,7 @@ type Props = {
   blockStyles?: ViewStyle;
 };
 
-export default function BlockWrapper({ children, blockStyles = {} }: Props) {
+export default function BlockWrapper({ children, blockStyles }: Props) {
   return <View style={[styles.container, blockStyles]}>{children}</View>;
 }
 

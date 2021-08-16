@@ -1,36 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
+import { useQuery } from 'react-query';
 import FoodItem from '../../components/Main/FoodItem';
 import Header from '../../components/Main/Header';
 import NewsCarousel from '../../components/Main/NewsCarousel';
 import Divider from '../../components/Shared/Divider';
+import QueryWrapper from '../../components/Shared/QueryWrapper';
 import TypePicker from '../../components/Shared/TypePicker';
 import { getResource } from '../../utils/api';
 import { IGroup, IProductsItem } from '../../utils/types';
 
 export default function Main() {
-  // * States for groups list and selecting UID
-  const [groups, setGroups] = useState<IGroup[]>([]);
   const [selectedGroup, setSelectedGroup] = useState('');
 
-  // * products that getted by UID
-  const [products, setProducts] = useState<IProductsItem[]>([]);
+  const {
+    isLoading: groupsLoading,
+    isError: groupsIsError,
+    data: groups,
+  } = useQuery<IGroup[]>('groups', async () => {
+    const response = await getResource('groups');
+    setSelectedGroup(response?.result[0]?.UIDGroup);
+    return response.result;
+  });
 
-  // * Getting groups and setting selected UID on initial request
-  useEffect(() => {
-    getResource('groups')
-      .then(res => setGroups(res?.result))
-      .catch(err => console.log(err));
-  }, []);
-
-  // * Getting products on selected UID changing
-  useEffect(() => {
-    if (selectedGroup) {
-      getResource('groups?UIDGroup=' + selectedGroup)
-        .then(res => setProducts(res?.result))
-        .catch(err => console.log(err));
-    }
-  }, [selectedGroup]);
+  // ============
+  const {
+    isLoading: productsLoading,
+    isError: productsIsError,
+    data: products,
+  } = useQuery<IProductsItem[]>(
+    ['groups', selectedGroup],
+    async () => {
+      const response = await getResource('groups?UIDGroup=' + selectedGroup);
+      return response.result;
+    },
+    { enabled: !!selectedGroup },
+  );
 
   return (
     <ScrollView
@@ -40,16 +45,24 @@ export default function Main() {
       <Header />
       <NewsCarousel />
       <>
-        <TypePicker
-          itemList={groups}
-          selected={selectedGroup}
-          setSelected={setSelectedGroup}
-        />
+        <QueryWrapper isLoading={groupsLoading} isError={groupsIsError}>
+          <TypePicker
+            itemList={groups}
+            selected={selectedGroup}
+            setSelected={setSelectedGroup}
+          />
+        </QueryWrapper>
         <Divider />
       </>
-      {products.map((product, i) => (
-        <FoodItem key={i} product={product} />
-      ))}
+      <QueryWrapper
+        isLoading={productsLoading}
+        IndicatorStyle={{ marginTop: 50 }}
+        isError={productsIsError}
+        indicatorSize="large">
+        {products?.map((product, i) => (
+          <FoodItem key={i} product={product} />
+        ))}
+      </QueryWrapper>
     </ScrollView>
   );
 }

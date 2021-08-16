@@ -3,11 +3,18 @@ import { StyleSheet, Text, View } from 'react-native';
 import appStyles from '../../constants/styles';
 import BackBtn from '../Shared/BackBtn';
 
-export default function Header({ text }: { text: string }) {
+export default function Header({
+  text,
+  children,
+}: {
+  text: string;
+  children?: JSX.Element;
+}) {
   return (
     <View style={styles.header}>
       <BackBtn fixed={false} />
       <Text style={styles.headerText}>{text}</Text>
+      {children}
     </View>
   );
 }

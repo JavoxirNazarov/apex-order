@@ -1,45 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Switch } from 'react-native';
+import React from 'react';
+import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { useQuery } from 'react-query';
 import BlockWrapper from '../../../components/Profile/BlockWrapper';
 import Header from '../../../components/Profile/Header';
+import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import Row from '../../../components/Shared/Row';
 import appStyles from '../../../constants/styles';
 import { getResource } from '../../../utils/api';
 
 export default function Addresses() {
-  const [adresses, setAdresses] = useState([]);
-  const [boV, setBoV] = useState(false);
+  const {
+    data: adresses,
+    isError,
+    isLoading,
+  } = useQuery<{ Address: string; Main: boolean }[]>(
+    'user-adresses',
+    async () => {
+      const response = await getResource('clients?phone=935544798');
+      return response?.result?.Addresses;
+    },
+  );
 
-  useEffect(() => {
-    getResource('clients?phone=998935544798')
-      .then(res => setAdresses(res?.result?.Addresses))
-      .catch(err => console.log(err));
-  }, []);
-
-  const handleChange = (val: boolean) => {
-    setBoV(val);
-  };
+  const handleChange = () => {};
 
   return (
     <View style={styles.container}>
       <Header text="Адреса доставки" />
 
-      <ScrollView style={{ flex: 1 }}>
-        {adresses.map((el, i) => (
-          <BlockWrapper key={i}>
-            <Row>
-              <Text style={styles.blockText}>{el.Address}</Text>
-              <Switch
-                trackColor={{
-                  false: 'rgba(30, 27, 38, 0.1)',
-                  true: appStyles.COLOR_PRIMARY,
-                }}
-                onValueChange={handleChange}
-                value={boV}
-              />
-            </Row>
-          </BlockWrapper>
-        ))}
+      <ScrollView style={styles.scroll}>
+        <QueryWrapper
+          isError={isError}
+          isLoading={isLoading}
+          indicatorSize="large"
+          IndicatorStyle={styles.feetbackMargin}
+          errorTextStyle={styles.feetbackMargin}>
+          {adresses?.map((el, i) => (
+            <BlockWrapper key={i}>
+              <Row>
+                <Text style={styles.blockText}>{el.Address}</Text>
+                <Switch
+                  trackColor={{
+                    false: 'rgba(30, 27, 38, 0.1)',
+                    true: appStyles.COLOR_PRIMARY,
+                  }}
+                  onValueChange={handleChange}
+                  value={el.Main}
+                />
+              </Row>
+            </BlockWrapper>
+          ))}
+        </QueryWrapper>
       </ScrollView>
     </View>
   );
@@ -47,6 +57,9 @@ export default function Addresses() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: appStyles.HORIZONTAL_PADDING },
+  scroll: {
+    flex: 1,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -63,5 +76,8 @@ const styles = StyleSheet.create({
     fontFamily: appStyles.FONT_REGULAR,
     color: appStyles.FONT_COLOR_SECONDARY,
     fontSize: 14,
+  },
+  feetbackMargin: {
+    marginTop: 50,
   },
 });
