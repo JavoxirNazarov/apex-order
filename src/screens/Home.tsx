@@ -13,7 +13,6 @@ import Profile from './HomeTabs/Profile';
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
-  unmountOnBlur: true,
   headerShown: false,
   tabBarActiveTintColor: appStyles.COLOR_PRIMARY,
   tabBarInactiveTintColor: '#C1C1CC',
@@ -41,7 +40,7 @@ export default function Home() {
       sceneContainerStyle={{ backgroundColor: appStyles.BACKGROUND_DEFAULT }}
       screenOptions={screenOptions}>
       <Tab.Screen
-        name="home/main"
+        name="main"
         options={{
           tabBarLabel: 'Меню',
           tabBarIcon: ({ color }) => <MainIcon fill={color} />,
@@ -49,16 +48,15 @@ export default function Home() {
         component={Main}
       />
       <Tab.Screen
-        name="home/basket"
+        name="basket"
         options={{
           tabBarLabel: 'Корзина',
           tabBarIcon: ({ color }) => <BasketIcon fill={color} />,
         }}
         component={Basket}
-        initialParams={{ initialOrder: false }}
       />
       <Tab.Screen
-        name="home/contacts"
+        name="contacts"
         options={{
           tabBarLabel: 'Контакты',
           tabBarIcon: ({ color }) => <ContactIcon fill={color} />,
@@ -66,8 +64,9 @@ export default function Home() {
         component={Contacts}
       />
       <Tab.Screen
-        name="home/profile"
+        name="profile"
         options={{
+          unmountOnBlur: true,
           tabBarLabel: 'Профиль',
           tabBarIcon: ({ color }) => <ProfileIcon fill={color} />,
         }}

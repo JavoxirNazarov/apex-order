@@ -16,12 +16,12 @@ export default function Settings({ navigation }: any) {
   const [phone, setPhone] = useState('');
 
   useEffect(() => {
-    getLocalData('@USER_INFO').then(localInfo => {
-      if (localInfo !== null) {
-        setName(localInfo?.name);
-        setPhone(localInfo?.phone);
-      }
-    });
+    (async () => {
+      const localPhone = await getLocalData('USER_PHONE');
+      const localName = await getLocalData('USER_NAME');
+      setName(localName || '');
+      setPhone(localPhone || '');
+    })();
   }, []);
 
   const handlingPhoneText = (text: string) => {
@@ -36,14 +36,16 @@ export default function Settings({ navigation }: any) {
       phone,
     };
     sendData('clients', body)
-      .then(() => storeLocalData('@USER_INFO', body))
-      .then(() => navigation.navigate('home/profile/me'))
+      .then(() => storeLocalData('USER_PHONE', phone))
+      .then(() => storeLocalData('USER_NAME', name))
+      .then(() => navigation.navigate('user'))
       .catch(err => console.log(err));
   };
 
   const logOut = () => {
-    removeLocalData('@USER_INFO');
-    navigation.navigate('home/profile/me');
+    removeLocalData('USER_PHONE');
+    removeLocalData('USER_NAME');
+    navigation.navigate('user');
   };
 
   return (

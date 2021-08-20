@@ -2,6 +2,7 @@ import React from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from 'react-query';
 import BackBtn from '../../../components/Shared/BackBtn';
+import CustomBottomSheet from '../../../components/Shared/CustomBottomSheet';
 import PaddWrapper from '../../../components/Shared/PaddWrapper';
 import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import appStyles from '../../../constants/styles';
@@ -22,7 +23,7 @@ type AddressType = {
 export default function Location({ route }: Props) {
   const { id } = route.params;
   const { data, isError, isLoading } = useQuery<AddressType>(
-    ['adresses', id],
+    ['addresses', id],
     async () => {
       const response = await getResource('pizzerias?UIDStructure=' + id);
       return response?.result;
@@ -36,7 +37,7 @@ export default function Location({ route }: Props) {
         source={{ uri: 'data:image/png;base64, ' + data?.Image }}>
         <BackBtn />
       </ImageBackground>
-      <View style={styles.textBlock}>
+      <CustomBottomSheet>
         <QueryWrapper isError={isError} isLoading={isLoading}>
           <PaddWrapper>
             <Text style={styles.name}>{data?.Structure}</Text>
@@ -46,7 +47,7 @@ export default function Location({ route }: Props) {
             </Text>
           </PaddWrapper>
         </QueryWrapper>
-      </View>
+      </CustomBottomSheet>
     </View>
   );
 }
@@ -59,12 +60,6 @@ const styles = StyleSheet.create({
     height: 308,
     backgroundColor: '#ccc',
     marginBottom: -20,
-  },
-  textBlock: {
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    flex: 1,
-    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   name: {
     marginTop: 40,

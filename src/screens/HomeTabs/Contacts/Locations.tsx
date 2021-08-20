@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
+  Linking,
 } from 'react-native';
 import appStyles from '../../../constants/styles';
 import LinearGradient from 'react-native-linear-gradient';
@@ -20,12 +21,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery } from 'react-query';
 import { getResource } from '../../../utils/api';
 import QueryWrapper from '../../../components/Shared/QueryWrapper';
+import { showMessage } from 'react-native-flash-message';
+import { useRef } from 'react';
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
-type AdressesType = {
+type AddressesType = {
   UIDStructure: string;
   Structure: string;
   Address: string;
@@ -35,8 +38,9 @@ type AdressesType = {
 };
 
 export default function Locations({ navigation }: Props) {
-  const { data, isError, isLoading } = useQuery<AdressesType[]>(
-    'adresses',
+  const mapRef = useRef<MapView>(null);
+  const { data, isError, isLoading } = useQuery<AddressesType[]>(
+    'addresses',
     async () => {
       const response = await getResource('pizzerias');
       return response?.result;
@@ -45,12 +49,24 @@ export default function Locations({ navigation }: Props) {
 
   const snapPoints = useMemo(() => ['35%', '70%'], []);
 
+  const handleLink = useCallback(async (url: string) => {
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      showMessage({
+        message: `Don't know how to open this URL: ${url}`,
+        type: 'warning',
+      });
+    }
+  }, []);
+
   const renderItem = useCallback(
-    ({ item }: { item: AdressesType }) => (
+    ({ item }: { item: AddressesType }) => (
       <TouchableOpacity
         style={styles.imageWrapper}
         onPress={() =>
-          navigation.navigate('home/contacts/location', {
+          navigation.navigate('location', {
             id: item.UIDStructure,
           })
         }>
@@ -71,9 +87,13 @@ export default function Locations({ navigation }: Props) {
     [navigation],
   );
 
+  useEffect(() => {
+    if (data?.length) mapRef.current?.fitToElements(true);
+  }, [data]);
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
         style={styles.map}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
@@ -100,9 +120,22 @@ export default function Locations({ navigation }: Props) {
           ListHeaderComponent={() => (
             <QueryWrapper isError={isError} isLoading={isLoading}>
               <View style={styles.socialIcons}>
-                <TwitterIcon />
-                <InstagramIcon style={styles.iconSpacing} />
-                <FacebookIcon />
+                <TwitterIcon
+                  onPress={() =>
+                    handleLink('https://www.instagram.com/apexpizza.uz/?hl=en')
+                  }
+                />
+                <InstagramIcon
+                  style={styles.iconSpacing}
+                  onPress={() =>
+                    handleLink('https://www.instagram.com/apexpizza.uz/?hl=en')
+                  }
+                />
+                <FacebookIcon
+                  onPress={() =>
+                    handleLink('https://www.instagram.com/apexpizza.uz/?hl=en')
+                  }
+                />
               </View>
             </QueryWrapper>
           )}

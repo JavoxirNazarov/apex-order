@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import basketState from './slices/basket-slice';
+import orderSlice from './slices/order-slice';
 
 export const store = configureStore({
   reducer: {
-    basketState,
+    orderSlice,
   },
 });
 

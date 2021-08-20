@@ -15,10 +15,10 @@ export default function Index() {
         headerShown: false,
         contentStyle: { backgroundColor: appStyles.BACKGROUND_DEFAULT },
       }}>
-      <Stack.Screen name="home/profile/me" component={Owner} />
-      <Stack.Screen name="home/profile/history" component={History} />
-      <Stack.Screen name="home/profile/addresses" component={Addresses} />
-      <Stack.Screen name="home/profile/settings" component={Settings} />
+      <Stack.Screen name="user" component={Owner} />
+      <Stack.Screen name="user-history" component={History} />
+      <Stack.Screen name="user-addresses" component={Addresses} />
+      <Stack.Screen name="user-settings" component={Settings} />
     </Stack.Navigator>
   );
 }

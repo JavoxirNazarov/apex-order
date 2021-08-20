@@ -13,11 +13,11 @@ export default function BlockWrapper({ children, blockStyles }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     minHeight: 70,
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
-    padding: appStyles.HORIZONTAL_PADDING,
+    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    paddingVertical: 10,
     marginBottom: 20,
   },
 });

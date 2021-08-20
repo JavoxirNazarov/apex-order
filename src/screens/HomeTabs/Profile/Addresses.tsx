@@ -10,11 +10,11 @@ import { getResource } from '../../../utils/api';
 
 export default function Addresses() {
   const {
-    data: adresses,
+    data: addresses,
     isError,
     isLoading,
   } = useQuery<{ Address: string; Main: boolean }[]>(
-    'user-adresses',
+    'user-addresses',
     async () => {
       const response = await getResource('clients?phone=935544798');
       return response?.result?.Addresses;
@@ -34,7 +34,7 @@ export default function Addresses() {
           indicatorSize="large"
           IndicatorStyle={styles.feetbackMargin}
           errorTextStyle={styles.feetbackMargin}>
-          {adresses?.map((el, i) => (
+          {addresses?.map((el, i) => (
             <BlockWrapper key={i}>
               <Row>
                 <Text style={styles.blockText}>{el.Address}</Text>

@@ -5,12 +5,13 @@ import SwitchSelector from 'react-native-switch-selector';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import ScrollLayoutWithBtn from '../components/Layouts/ScrollLayoutWithBtn';
+import MySwitchSelector from '../components/Shared/MySwitchSelector';
 import PaddWrapper from '../components/Shared/PaddWrapper';
 import PreviewPhoto from '../components/Shared/PreviewPhoto';
 import QueryWrapper from '../components/Shared/QueryWrapper';
 import TypePicker from '../components/Shared/TypePicker';
 import appStyles from '../constants/styles';
-import { addToBasket } from '../redux/slices/basket-slice';
+import { addToBasket } from '../redux/slices/order-slice';
 import { getResource } from '../utils/api';
 import { IProduct } from '../utils/types';
 
@@ -158,18 +159,10 @@ export default function Product({ route, navigation }: Props) {
           ) : (
             <PaddWrapper>
               {variantOptions?.length > 1 && (
-                <SwitchSelector
-                  selectedColor="#fff"
-                  textColor={appStyles.FONT_COLOR_SECONDARY}
-                  buttonColor={appStyles.COLOR_PRIMARY}
-                  hasPadding
-                  height={50}
-                  style={styles.select}
-                  borderColor="transparent"
-                  valuePadding={5}
+                <MySwitchSelector
                   options={variantOptions}
-                  initial={0}
-                  onPress={(value: string) => setSelectedVariantUID(value)}
+                  selectFunc={setSelectedVariantUID}
+                  switchStyle={styles.select}
                 />
               )}
             </PaddWrapper>

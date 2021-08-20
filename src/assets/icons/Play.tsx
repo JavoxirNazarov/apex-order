@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Svg, {Path} from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import appStyles from '../../constants/styles';
 
-function PayIcon({active}: {active?: boolean}) {
+function PayIcon({ active }: { active?: boolean }) {
   return (
     <Svg width={29} height={29} viewBox="0 0 29 29" fill="none">
       <Path

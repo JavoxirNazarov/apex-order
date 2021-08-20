@@ -20,6 +20,7 @@ export default memo(function BackBtn({ fixed = true }: { fixed?: boolean }) {
 
 const styles = StyleSheet.create({
   backBtn: {
+    zIndex: 10,
     width: 40,
     height: 40,
     alignItems: 'center',

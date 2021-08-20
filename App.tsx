@@ -14,6 +14,7 @@ import Home from './src/screens/Home';
 import Product from './src/screens/Product';
 import UserInfo from './src/screens/UserInfo';
 import FlashMessage from 'react-native-flash-message';
+import Map from './src/screens/Map';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,7 +37,8 @@ const App = () => {
               }}>
               <Stack.Screen name="home" component={Home} />
               <Stack.Screen name="product" component={Product} />
-              <Stack.Screen name="user-info" component={UserInfo} />
+              <Stack.Screen name="authorization" component={UserInfo} />
+              <Stack.Screen name="map" component={Map} />
             </Stack.Navigator>
           </NavigationContainer>
         </BottomSheetModalProvider>

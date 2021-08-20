@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 import RefreshIcon from '../../../assets/icons/profile/Refresh';
@@ -8,9 +8,12 @@ import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import Row from '../../../components/Shared/Row';
 import appStyles from '../../../constants/styles';
 import { getResource } from '../../../utils/api';
+import { getLocalData } from '../../../utils/helpers/localStorage';
 
-type ordersType = {
+export type ordersType = {
+  UIDOrder: string;
   Date: string;
+  Ready: boolean;
   Goods: {
     UIDNomenclature: string;
     Nomenclature: string;
@@ -19,14 +22,23 @@ type ordersType = {
 };
 
 export default function History() {
-  const {
-    data: orders,
-    isError,
-    isLoading,
-  } = useQuery<ordersType[]>('orders-history', async () => {
-    const response = await getResource('orders?phone=998935544798');
-    return response?.result;
+  const [userPhone] = useState(async () => {
+    const phone = await getLocalData('USER_PHONE');
+    return phone;
   });
+
+  const {
+    isLoading,
+    isError,
+    data: orders,
+  } = useQuery<ordersType[]>(
+    ['user-orders'],
+    async () => {
+      const response = await getResource('orders?phone=' + userPhone);
+      return response.result;
+    },
+    { enabled: !!userPhone },
+  );
 
   return (
     <View style={styles.container}>
@@ -69,7 +81,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   blockRow: {
-    marginBottom: 10,
+    marginVertical: 10,
   },
   blockText: {
     fontFamily: appStyles.FONT,

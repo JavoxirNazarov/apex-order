@@ -91,5 +91,11 @@
 		<string>Rubik-SemiBold.ttf</string>
 		<string>Rubik-SemiBoldItalic.ttf</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+  <string>Программе нужно разрешение для корректной работы доставщиков</string>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>Программе нужно разрешение для корректной работы доставщиков</string>
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  <string>Программе нужно разрешение для корректной работы доставщиков</string>
 </dict>
 </plist>

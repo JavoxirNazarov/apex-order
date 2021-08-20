@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface IBasketProduct {
+export interface IOrderProduct {
   UIDProduct: string;
   Key: string;
   Price: number;
@@ -9,19 +9,27 @@ export interface IBasketProduct {
   Product?: string;
 }
 
+interface IAddress {
+  lat: number;
+  lon: number;
+  street: string;
+}
+
 interface IState {
-  products: IBasketProduct[];
+  products: IOrderProduct[];
+  address: IAddress | null;
 }
 
 const initialState: IState = {
   products: [],
+  address: null,
 };
 
-export const basketSlice = createSlice({
-  name: 'basket',
+export const orderSlice = createSlice({
+  name: 'order',
   initialState,
   reducers: {
-    addToBasket: (state, { payload }: PayloadAction<IBasketProduct>) => {
+    addToBasket: (state, { payload }: PayloadAction<IOrderProduct>) => {
       if (
         state.products.some(
           el => el.UIDProduct === payload.UIDProduct && el.Key === payload.Key,
@@ -62,12 +70,24 @@ export const basketSlice = createSlice({
         });
       }
     },
+    setAddress: (state, { payload }: PayloadAction<IAddress>) => {
+      state.address = payload;
+    },
+    refreshOrderState: () => {
+      return initialState;
+    },
   },
 });
 
-const { actions, reducer } = basketSlice;
+const { actions, reducer } = orderSlice;
 
-export const { clearBasket, addToBasket, incrementProduct, decrementProduct } =
-  actions;
+export const {
+  clearBasket,
+  addToBasket,
+  incrementProduct,
+  decrementProduct,
+  setAddress,
+  refreshOrderState,
+} = actions;
 
 export default reducer;

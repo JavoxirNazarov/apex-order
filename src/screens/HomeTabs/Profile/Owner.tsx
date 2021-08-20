@@ -18,13 +18,14 @@ import ArrowIcon from '../../../assets/icons/Arrow';
 import ContactIcon from '../../../assets/icons/tabs/Contacts';
 import { useFocusEffect } from '@react-navigation/native';
 import { getLocalData } from '../../../utils/helpers/localStorage';
+import CustomBottomSheet from '../../../components/Shared/CustomBottomSheet';
 
 export default function Owner({ navigation }: any) {
   const [registered, setRegistered] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
-      getLocalData('@USER_INFO').then(user => {
+      getLocalData('USER_PHONE').then(user => {
         setRegistered(user !== null);
       });
     }, []),
@@ -35,7 +36,7 @@ export default function Owner({ navigation }: any) {
       <View style={styles.imgBlock}>
         <TouchableOpacity
           style={styles.settingsBtn}
-          onPress={() => navigation.navigate('home/profile/settings')}>
+          onPress={() => navigation.navigate('user-settings')}>
           <SettingsIcon />
         </TouchableOpacity>
         <ImageBackground
@@ -46,14 +47,13 @@ export default function Owner({ navigation }: any) {
         </ImageBackground>
       </View>
 
-      <View style={styles.textBlock}>
-        <BottomSheetHandle />
+      <CustomBottomSheet handleComponent={<BottomSheetHandle />}>
         <PaddWrapper>
           {registered ? (
             <>
               <TouchableOpacity
                 style={styles.row}
-                onPress={() => navigation.navigate('home/profile/history')}>
+                onPress={() => navigation.navigate('user-history')}>
                 <View style={styles.rowIconWraper}>
                   <ClockIcon />
                 </View>
@@ -62,7 +62,7 @@ export default function Owner({ navigation }: any) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.row}
-                onPress={() => navigation.navigate('home/profile/addresses')}>
+                onPress={() => navigation.navigate('user-addresses')}>
                 <View style={styles.rowIconWraper}>
                   <ContactIcon width={15.3} height={18} fill="#1E1B26" />
                 </View>
@@ -73,7 +73,9 @@ export default function Owner({ navigation }: any) {
           ) : (
             <TouchableOpacity
               style={styles.row}
-              onPress={() => navigation.navigate('user-info')}>
+              onPress={() =>
+                navigation.navigate('authorization', { fromBasket: false })
+              }>
               <View style={styles.rowIconWraper}>
                 <ContactIcon width={15.3} height={18} fill="#1E1B26" />
               </View>
@@ -82,7 +84,7 @@ export default function Owner({ navigation }: any) {
             </TouchableOpacity>
           )}
         </PaddWrapper>
-      </View>
+      </CustomBottomSheet>
     </View>
   );
 }
@@ -122,12 +124,6 @@ const styles = StyleSheet.create({
     height: 142,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  textBlock: {
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    flex: 1,
-    backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   row: {
     width: '100%',
