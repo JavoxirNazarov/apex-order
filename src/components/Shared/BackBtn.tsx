@@ -3,9 +3,10 @@ import React from 'react';
 import { memo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import ArrowBackIcon from '../../assets/icons/ArrowBack';
+import { NavigationType } from '../../utils/types';
 
 export default memo(function BackBtn({ fixed = true }: { fixed?: boolean }) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationType>();
 
   const goBack = () => navigation.goBack();
 

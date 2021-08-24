@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import appStyles from '../../constants/styles';
+import { ChildrenType } from '../../utils/types';
 
 interface IProps {
-  children: JSX.Element | JSX.Element[];
+  children: ChildrenType;
   handleComponent?: JSX.Element;
 }
 

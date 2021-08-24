@@ -19,8 +19,9 @@ import ContactIcon from '../../../assets/icons/tabs/Contacts';
 import { useFocusEffect } from '@react-navigation/native';
 import { getLocalData } from '../../../utils/helpers/localStorage';
 import CustomBottomSheet from '../../../components/Shared/CustomBottomSheet';
+import { NavigationType } from '../../../utils/types';
 
-export default function Owner({ navigation }: any) {
+export default function Owner({ navigation }: { navigation: NavigationType }) {
   const [registered, setRegistered] = useState(true);
 
   useFocusEffect(
@@ -36,7 +37,11 @@ export default function Owner({ navigation }: any) {
       <View style={styles.imgBlock}>
         <TouchableOpacity
           style={styles.settingsBtn}
-          onPress={() => navigation.navigate('user-settings')}>
+          onPress={() =>
+            navigation.navigate('profile', {
+              screen: 'user-settings',
+            })
+          }>
           <SettingsIcon />
         </TouchableOpacity>
         <ImageBackground
@@ -53,7 +58,11 @@ export default function Owner({ navigation }: any) {
             <>
               <TouchableOpacity
                 style={styles.row}
-                onPress={() => navigation.navigate('user-history')}>
+                onPress={() =>
+                  navigation.navigate('profile', {
+                    screen: 'user-history',
+                  })
+                }>
                 <View style={styles.rowIconWraper}>
                   <ClockIcon />
                 </View>
@@ -62,7 +71,11 @@ export default function Owner({ navigation }: any) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.row}
-                onPress={() => navigation.navigate('user-addresses')}>
+                onPress={() =>
+                  navigation.navigate('profile', {
+                    screen: 'user-addresses',
+                  })
+                }>
                 <View style={styles.rowIconWraper}>
                   <ContactIcon width={15.3} height={18} fill="#1E1B26" />
                 </View>

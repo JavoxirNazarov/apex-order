@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import appStyles from '../../constants/styles';
-import { SetUserStepType } from '../../constants/types';
-import { SettingState } from '../../utils/types';
+import { SettingState, SetUserStepType } from '../../utils/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {

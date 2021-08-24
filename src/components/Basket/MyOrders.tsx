@@ -7,10 +7,11 @@ import appStyles from '../../constants/styles';
 import { ordersType } from '../../screens/HomeTabs/Profile/History';
 import { getResource } from '../../utils/api';
 import { getLocalData } from '../../utils/helpers/localStorage';
+import { NavigationType } from '../../utils/types';
 import Row from '../Shared/Row';
 
 export default function MyOrders() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<NavigationType>();
 
   const { data } = useQuery<ordersType[]>(['user-orders'], async () => {
     const phone = await getLocalData('USER_PHONE');
@@ -26,7 +27,14 @@ export default function MyOrders() {
       {currentOrders?.map((el, i) => (
         <TouchableOpacity
           key={i}
-          onPress={() => navigation.navigate('order', { UID: el.UIDOrder })}>
+          onPress={() =>
+            navigation.navigate('basket', {
+              screen: 'order',
+              params: {
+                UID: el.UIDOrder,
+              },
+            })
+          }>
           <Row containerStyle={styles.header}>
             <Text style={styles.title}>Заказ</Text>
 

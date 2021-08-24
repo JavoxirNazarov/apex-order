@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { checkAndGetItemUID } from '.';
 import appStyles from '../../../constants/styles';
-import { IGroup, ISauce, SettingState } from '../../../utils/types';
+import { SettingState } from '../../../utils/types';
+import { IGroup, ISauce } from '../../../utils/types/api';
 
 interface Props {
   info: IGroup | ISauce | string;
@@ -10,7 +11,7 @@ interface Props {
   setSelected: SettingState<string>;
 }
 
-export default function Item({ info, source, active, setSelected }: Props) {
+export default function Item({ info, active, setSelected }: Props) {
   return (
     <TouchableOpacity
       onPress={() => setSelected(checkAndGetItemUID(info))}

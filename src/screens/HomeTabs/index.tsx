@@ -1,14 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import BasketIcon from '../assets/icons/tabs/Basket';
-import ContactIcon from '../assets/icons/tabs/Contacts';
-import MainIcon from '../assets/icons/tabs/Main';
-import ProfileIcon from '../assets/icons/tabs/Profile';
-import appStyles from '../constants/styles';
-import Basket from './HomeTabs/Basket';
-import Contacts from './HomeTabs/Contacts';
-import Main from './HomeTabs/Main';
-import Profile from './HomeTabs/Profile';
+import BasketIcon from '../../assets/icons/tabs/Basket';
+import ContactIcon from '../../assets/icons/tabs/Contacts';
+import MainIcon from '../../assets/icons/tabs/Main';
+import ProfileIcon from '../../assets/icons/tabs/Profile';
+import appStyles from '../../constants/styles';
+import Basket from './Basket';
+import Contacts from './Contacts';
+import Home from './Home';
+import Profile from './Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,18 +34,18 @@ const screenOptions = {
   },
 };
 
-export default function Home() {
+export default function HomeTabs() {
   return (
     <Tab.Navigator
       sceneContainerStyle={{ backgroundColor: appStyles.BACKGROUND_DEFAULT }}
       screenOptions={screenOptions}>
       <Tab.Screen
-        name="main"
+        name="home"
         options={{
           tabBarLabel: 'Меню',
           tabBarIcon: ({ color }) => <MainIcon fill={color} />,
         }}
-        component={Main}
+        component={Home}
       />
       <Tab.Screen
         name="basket"
@@ -66,7 +66,6 @@ export default function Home() {
       <Tab.Screen
         name="profile"
         options={{
-          unmountOnBlur: true,
           tabBarLabel: 'Профиль',
           tabBarIcon: ({ color }) => <ProfileIcon fill={color} />,
         }}

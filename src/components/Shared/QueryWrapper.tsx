@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, ViewStyle } from 'react-native';
 import appStyles from '../../constants/styles';
+import { ChildrenType } from '../../utils/types';
 import LoadingIndicator from './LoadingIndicator';
 
 type Props = {
-  children: JSX.Element[] | JSX.Element | undefined;
+  children: ChildrenType;
   isLoading: boolean;
   isError: boolean;
   errorTextStyle?: ViewStyle;

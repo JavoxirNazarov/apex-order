@@ -17,15 +17,15 @@ import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import BottomSheetHandle from '../../../components/Shared/BottomSheetHandle';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import mapMarker from '../../../assets/icons/location/map-marker.png';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery } from 'react-query';
 import { getResource } from '../../../utils/api';
 import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import { showMessage } from 'react-native-flash-message';
 import { useRef } from 'react';
+import { NavigationType } from '../../../utils/types';
 
 type Props = {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NavigationType;
 };
 
 type AddressesType = {
@@ -68,8 +68,11 @@ export default function Locations({ navigation }: Props) {
       <TouchableOpacity
         style={styles.imageWrapper}
         onPress={() =>
-          navigation.navigate('location', {
-            id: item.UIDStructure,
+          navigation.navigate('contacts', {
+            screen: 'location',
+            params: {
+              id: item.UIDStructure,
+            },
           })
         }>
         <ImageBackground

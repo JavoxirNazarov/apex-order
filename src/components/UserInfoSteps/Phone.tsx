@@ -2,8 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import appStyles from '../../constants/styles';
-import { SetUserStepType } from '../../constants/types';
-import { SettingState } from '../../utils/types';
+import {
+  NavigationType,
+  SettingState,
+  SetUserStepType,
+} from '../../utils/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {
@@ -17,7 +20,7 @@ export default function Phone({
   phone,
   setPhone,
 }: PhoneComponentProps) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationType>();
   const handleNextStep = () => setStepName('CODE');
   const goBack = () => navigation.goBack();
 

@@ -13,8 +13,9 @@ import CheckedIcon from '../../../assets/icons/CheckedIcon';
 import { BubblesLoader } from 'react-native-indicator';
 import { useQuery } from 'react-query';
 import { getResource } from '../../../utils/api';
-import { IOrder } from '../../../constants/types';
 import { TouchableOpacity } from '@gorhom/bottom-sheet';
+import { IOrder } from '../../../utils/types/api';
+import { NavigationType } from '../../../utils/types';
 
 const labels = ['Принято', 'Готовится', 'Доставка', 'Complete'];
 const customStyles = {
@@ -41,7 +42,13 @@ const customStyles = {
   currentStepLabelColor: appStyles.FONT_COLOR,
 };
 
-export default function Order({ route, navigation }: any) {
+export default function Order({
+  route,
+  navigation,
+}: {
+  route: { params: { UID: string } };
+  navigation: NavigationType;
+}) {
   const [currentStep, setCurrentStep] = useState(0);
   const { UID } = route.params;
 

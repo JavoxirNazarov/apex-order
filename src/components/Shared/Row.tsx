@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
+import { ChildrenType } from '../../utils/types';
 
 type Props = {
-  children: JSX.Element[] | JSX.Element;
+  children: ChildrenType;
   containerStyle?: ViewStyle;
 };
 

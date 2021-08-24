@@ -8,9 +8,9 @@ import Divider from '../../components/Shared/Divider';
 import QueryWrapper from '../../components/Shared/QueryWrapper';
 import TypePicker from '../../components/Shared/TypePicker';
 import { getResource } from '../../utils/api';
-import { IGroup, IProductsItem } from '../../utils/types';
+import { IGroup, IProductsItem } from '../../utils/types/api';
 
-export default function Main() {
+export default function Home() {
   const [selectedGroup, setSelectedGroup] = useState('');
 
   const {

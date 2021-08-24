@@ -2,14 +2,15 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import appStyles from '../../constants/styles';
-import { IProductsItem } from '../../utils/types';
+import { NavigationType } from '../../utils/types';
+import { IProductsItem } from '../../utils/types/api';
 
 type Props = {
   product: IProductsItem;
 };
 
 export default function FoodItem({ product }: Props) {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<NavigationType>();
 
   return (
     <TouchableOpacity

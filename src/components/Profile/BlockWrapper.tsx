@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import appStyles from '../../constants/styles';
+import { ChildrenType } from '../../utils/types';
 
 type Props = {
-  children: JSX.Element[] | JSX.Element | undefined;
+  children: ChildrenType;
   blockStyles?: ViewStyle;
 };
 

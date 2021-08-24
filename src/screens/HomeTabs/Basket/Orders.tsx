@@ -26,8 +26,15 @@ import { RootState } from '../../../redux/store';
 import { sendData } from '../../../utils/api';
 import { getLocalData } from '../../../utils/helpers/localStorage';
 import moment from 'moment';
+import { NavigationType } from '../../../utils/types';
 
-export default function Orders({ navigation, route }: any) {
+export default function Orders({
+  navigation,
+  route,
+}: {
+  navigation: NavigationType;
+  route: { params: { initialOrder: boolean } };
+}) {
   const dispatch = useDispatch();
   const { initialOrder } = route?.params;
   const { products, address, orderDate } = useSelector(
@@ -94,7 +101,7 @@ export default function Orders({ navigation, route }: any) {
     <>
       <ScrollLayoutWithBtn
         onBtnPress={() => {
-          products.length ? openBottomSheet() : navigation.navigate('main');
+          products.length ? openBottomSheet() : navigation.navigate('home');
         }}
         btnText={
           'ОФОРМИТЬ ЗА' + (products.length ? ` ${orderPrice} сум` : 'КАЗ')

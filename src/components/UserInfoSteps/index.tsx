@@ -1,9 +1,8 @@
 import React from 'react';
-import { UserStepsType } from '../../constants/types';
+import { SettingState, UserStepsType } from '../../utils/types';
 import Phone from './Phone';
 import Code from './Code';
 import Name from './Name';
-import { SettingState } from '../../utils/types';
 
 type Props = {
   stepName: UserStepsType;

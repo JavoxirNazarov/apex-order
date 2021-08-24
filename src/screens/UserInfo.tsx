@@ -2,11 +2,17 @@ import React from 'react';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { Steps } from '../components/UserInfoSteps';
-import { UserStepsType } from '../constants/types';
+import { NavigationType, UserStepsType } from '../utils/types';
 import { sendData } from '../utils/api';
 import { storeLocalData } from '../utils/helpers/localStorage';
 
-export default function UserInfo({ navigation, route }: any) {
+export default function UserInfo({
+  navigation,
+  route,
+}: {
+  navigation: NavigationType;
+  route: { params: { fromBasket: boolean } };
+}) {
   const { fromBasket } = route.params;
   const [stepName, setStepName] = useState<UserStepsType>('PHONE');
   const [phone, setPhone] = useState('');
@@ -24,12 +30,12 @@ export default function UserInfo({ navigation, route }: any) {
       .then(() => {
         fromBasket
           ? navigation.navigate('basket', {
-              screen: 'order',
+              screen: 'orders',
               params: {
                 initialOrder: true,
               },
             })
-          : navigation.navigate('main');
+          : navigation.navigate('home');
       })
       .catch(err => console.log(err));
   };

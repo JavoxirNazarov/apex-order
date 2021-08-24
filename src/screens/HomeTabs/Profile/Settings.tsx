@@ -10,8 +10,13 @@ import {
   removeLocalData,
   storeLocalData,
 } from '../../../utils/helpers/localStorage';
+import { NavigationType } from '../../../utils/types';
 
-export default function Settings({ navigation }: any) {
+export default function Settings({
+  navigation,
+}: {
+  navigation: NavigationType;
+}) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
@@ -38,14 +43,14 @@ export default function Settings({ navigation }: any) {
     sendData('clients', body)
       .then(() => storeLocalData('USER_PHONE', phone))
       .then(() => storeLocalData('USER_NAME', name))
-      .then(() => navigation.navigate('user'))
+      .then(() => navigation.navigate('profile', { screen: 'user' }))
       .catch(err => console.log(err));
   };
 
   const logOut = () => {
     removeLocalData('USER_PHONE');
     removeLocalData('USER_NAME');
-    navigation.navigate('user');
+    navigation.navigate('profile', { screen: 'user' });
   };
 
   return (

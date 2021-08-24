@@ -27,6 +27,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { setOrderDate } from '../../redux/slices/order-slice';
+import { NavigationType } from '../../utils/types';
 
 const paymentsRender = (namePayment: string) => {
   switch (namePayment) {
@@ -56,7 +57,7 @@ type Props = {
   orderPrice: number;
   bottomSheetModalRef: RefObject<BottomSheetModal>;
   closeBottomSheet: () => void;
-  navigation: any;
+  navigation: NavigationType;
   order: () => void;
 };
 

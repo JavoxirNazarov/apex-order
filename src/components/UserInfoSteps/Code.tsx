@@ -2,8 +2,7 @@ import React, { useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import appStyles from '../../constants/styles';
-import { SetUserStepType } from '../../constants/types';
-import { SettingState } from '../../utils/types';
+import { SettingState, SetUserStepType } from '../../utils/types';
 import UserInfoLayout from '../Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {

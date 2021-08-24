@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useQuery } from 'react-query';
@@ -12,10 +11,11 @@ import TypePicker from '../components/Shared/TypePicker';
 import appStyles from '../constants/styles';
 import { addToBasket } from '../redux/slices/order-slice';
 import { getResource } from '../utils/api';
-import { IProduct } from '../utils/types';
+import { NavigationType } from '../utils/types';
+import { IProduct } from '../utils/types/api';
 
 type Props = {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NavigationType;
   route: { params: { UID: string } };
 };
 

@@ -2,11 +2,12 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import CencelIcon from '../../assets/icons/Cencel';
 import appStyles from '../../constants/styles';
+import { ChildrenType } from '../../utils/types';
 import AcceptFooter from '../Shared/AcceptFooter';
 import PaddWrapper from '../Shared/PaddWrapper';
 
 type PropsType = {
-  children: JSX.Element;
+  children: ChildrenType;
   handleNextStep: () => void;
   onBackPress: () => void;
 };

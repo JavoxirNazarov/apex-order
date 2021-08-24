@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { ChildrenType } from '../../utils/types';
 import AcceptFooter from '../Shared/AcceptFooter';
 
 type PropTypes = {
-  children: JSX.Element;
+  children: ChildrenType;
   btnText: string;
   onBtnPress?: () => void;
 };

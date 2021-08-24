@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import appStyles from './src/constants/styles';
-import Home from './src/screens/Home';
+import HomeTabs from './src/screens/HomeTabs';
 import Product from './src/screens/Product';
 import UserInfo from './src/screens/UserInfo';
 import FlashMessage from 'react-native-flash-message';
@@ -35,7 +35,7 @@ const App = () => {
                 headerShown: false,
                 contentStyle: { backgroundColor: appStyles.BACKGROUND_DEFAULT },
               }}>
-              <Stack.Screen name="home" component={Home} />
+              <Stack.Screen name="home-tabs" component={HomeTabs} />
               <Stack.Screen name="product" component={Product} />
               <Stack.Screen name="authorization" component={UserInfo} />
               <Stack.Screen name="map" component={Map} />
