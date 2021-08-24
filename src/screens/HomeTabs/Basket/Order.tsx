@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import BackBtn from '../../../components/Shared/BackBtn';
 import CustomBottomSheet from '../../../components/Shared/CustomBottomSheet';
@@ -10,6 +10,11 @@ import appStyles from '../../../constants/styles';
 import CallIcon from '../../../assets/icons/Call';
 import StepIndicator from 'react-native-step-indicator';
 import CheckedIcon from '../../../assets/icons/CheckedIcon';
+import { BubblesLoader } from 'react-native-indicator';
+import { useQuery } from 'react-query';
+import { getResource } from '../../../utils/api';
+import { IOrder } from '../../../constants/types';
+import { TouchableOpacity } from '@gorhom/bottom-sheet';
 
 const labels = ['Принято', 'Готовится', 'Доставка', 'Complete'];
 const customStyles = {
@@ -37,8 +42,44 @@ const customStyles = {
 };
 
 export default function Order({ route, navigation }: any) {
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(0);
   const { UID } = route.params;
+
+  const { data: order } = useQuery<IOrder>(
+    ['user-orders', UID],
+    async () => {
+      const response = await getResource('orders?UIDOrder=' + UID);
+      return response.result;
+    },
+    { enabled: !!UID, refetchInterval: 10000 },
+  );
+
+  const renderStepIndicator = useCallback(
+    ({ stepStatus }: { position: number; stepStatus: string }) => {
+      if (stepStatus === 'current') {
+        return <BubblesLoader color="#fff" size={17} dotRadius={4} />;
+      } else if (stepStatus === 'unfinished') {
+        return <View style={styles.unfinishedStepIndicator} />;
+      } else {
+        return <CheckedIcon />;
+      }
+    },
+    [],
+  );
+
+  const stepKeyVal = useMemo(
+    () => ({
+      Новый: 0,
+      Готовится: 1,
+      НаДоставку: 2,
+      Завершен: 3,
+    }),
+    [],
+  );
+
+  useEffect(() => {
+    setCurrentStep(stepKeyVal[order?.State || 'Новый']);
+  }, [order, stepKeyVal]);
 
   return (
     <View style={styles.container}>
@@ -48,55 +89,56 @@ export default function Order({ route, navigation }: any) {
       <CustomBottomSheet handleComponent={<HandleWithImg />}>
         <ScrollView>
           <>
-            <View style={{ alignItems: 'center', marginBottom: 25 }}>
-              <Text style={styles.timeText}>11:20 - 11:55</Text>
+            <View style={styles.timeBlock}>
+              <Text style={styles.timeText}>{order?.Time}</Text>
             </View>
-
             <View style={{ marginBottom: 25 }}>
               <StepIndicator
                 customStyles={customStyles}
                 currentPosition={currentStep}
                 stepCount={4}
                 labels={labels}
-                renderStepIndicator={({ stepStatus }) => {
-                  return stepStatus === 'unfinished' ? (
-                    <View style={styles.unfinishedStepIndicator} />
-                  ) : (
-                    <CheckedIcon />
-                  );
-                }}
+                renderStepIndicator={renderStepIndicator}
               />
             </View>
-
             <PaddWrapper>
               <BlockWrapper>
-                <Row containerStyle={styles.blockRow}>
-                  <Text style={styles.blockText}>Гавайская</Text>
-                  <Text style={styles.blockText}>x1</Text>
-                </Row>
-                <Row containerStyle={styles.blockRow}>
-                  <Text style={styles.blockText}>Гавайская</Text>
-                  <Text style={styles.blockText}>x1</Text>
-                </Row>
-                <Row containerStyle={styles.blockRow}>
-                  <Text style={styles.blockText}>Гавайская</Text>
-                  <Text style={styles.blockText}>x1</Text>
-                </Row>
+                {order?.Goods?.map((good, i) => (
+                  <Row key={i} containerStyle={styles.goodRow}>
+                    <Text style={styles.blockText}>{good.Nomenclature}</Text>
+                    <Text style={styles.blockText}>x{good.Amount}</Text>
+                  </Row>
+                ))}
               </BlockWrapper>
+
               <BlockWrapper blockStyles={styles.courierBlock}>
-                <Row containerStyle={{ height: 70 }}>
-                  <View
-                    style={{ height: '100%', justifyContent: 'space-evenly' }}>
-                    <Text style={styles.curierName}>Тимур Одилов</Text>
-                    <Text style={styles.courierWork}>Курьер</Text>
+                <Row>
+                  <View>
+                    <View style={styles.curierNameScleton} />
+                    <View
+                      style={[
+                        styles.curierNameScleton,
+                        styles.courierWorkScleton,
+                      ]}
+                    />
+
+                    {/* <Text style={styles.curierName}>{order?.Courier}</Text>
+                    <Text style={styles.courierWork}>
+                      {order?.CourierPhone}
+                    </Text> */}
                   </View>
-                  <CallIcon fill={appStyles.COLOR_PRIMARY} />
+                  <CallIcon
+                    fill={order?.Courier ? appStyles.COLOR_PRIMARY : '#BBBBBE'}
+                  />
                 </Row>
               </BlockWrapper>
 
               <BlockWrapper>
                 <Text>Оцените нас</Text>
-                <Text>Моцарелла, Гауда, Соус Итальянский, Томаты, Базилик</Text>
+
+                <TouchableOpacity onPress={() => navigation.navigate('main')}>
+                  <Text>Отзыв</Text>
+                </TouchableOpacity>
               </BlockWrapper>
             </PaddWrapper>
           </>
@@ -110,6 +152,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  mapBackground: {
+    height: 230,
+    backgroundColor: '#ccc',
+    marginBottom: -10,
+  },
+  timeBlock: {
+    alignItems: 'center',
+    marginBottom: 25,
+  },
   timeText: {
     fontFamily: appStyles.FONT_REGULAR,
     color: appStyles.FONT_COLOR,
@@ -121,12 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 50,
   },
-  mapBackground: {
-    height: 230,
-    backgroundColor: '#ccc',
-    marginBottom: -10,
-  },
-  blockRow: {
+  goodRow: {
     marginVertical: 10,
   },
   blockText: {
@@ -137,7 +183,19 @@ const styles = StyleSheet.create({
   courierBlock: {
     justifyContent: 'center',
   },
+  curierNameScleton: {
+    width: 93,
+    height: 13,
+    borderRadius: 18,
+    backgroundColor: 'rgba(30, 27, 38, 0.3)',
+  },
+  courierWorkScleton: {
+    backgroundColor: 'rgba(30, 27, 38, 0.2)',
+    marginTop: 7,
+    width: 41,
+  },
   curierName: {
+    marginBottom: 7,
     fontFamily: appStyles.FONT,
     color: appStyles.FONT_COLOR,
     fontSize: 14,

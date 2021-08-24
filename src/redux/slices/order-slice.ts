@@ -18,11 +18,13 @@ interface IAddress {
 interface IState {
   products: IOrderProduct[];
   address: IAddress | null;
+  orderDate: Date;
 }
 
 const initialState: IState = {
   products: [],
   address: null,
+  orderDate: new Date(),
 };
 
 export const orderSlice = createSlice({
@@ -73,6 +75,9 @@ export const orderSlice = createSlice({
     setAddress: (state, { payload }: PayloadAction<IAddress>) => {
       state.address = payload;
     },
+    setOrderDate: (state, { payload }: PayloadAction<Date>) => {
+      state.orderDate = payload;
+    },
     refreshOrderState: () => {
       return initialState;
     },
@@ -87,6 +92,7 @@ export const {
   incrementProduct,
   decrementProduct,
   setAddress,
+  setOrderDate,
   refreshOrderState,
 } = actions;
 

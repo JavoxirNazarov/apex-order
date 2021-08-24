@@ -7,19 +7,28 @@ import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import Row from '../../../components/Shared/Row';
 import appStyles from '../../../constants/styles';
 import { getResource } from '../../../utils/api';
+import { SwipeRow } from 'react-native-swipe-list-view';
+import { getLocalData } from '../../../utils/helpers/localStorage';
+import DeleteIcon from '../../../assets/icons/Delete';
+
+interface IAdress {
+  street: string;
+  lon: number;
+  lat: number;
+  main: boolean;
+}
 
 export default function Addresses() {
   const {
     data: addresses,
     isError,
     isLoading,
-  } = useQuery<{ Address: string; Main: boolean }[]>(
-    'user-addresses',
-    async () => {
-      const response = await getResource('clients?phone=935544798');
-      return response?.result?.Addresses;
-    },
-  );
+  } = useQuery<IAdress[]>('user-addresses', async () => {
+    const phone = await getLocalData('USER_PHONE');
+    if (!phone) return [];
+    const response = await getResource(`clients?phone=${phone}&Address=true`);
+    return response?.result;
+  });
 
   const handleChange = () => {};
 
@@ -35,19 +44,35 @@ export default function Addresses() {
           IndicatorStyle={styles.feetbackMargin}
           errorTextStyle={styles.feetbackMargin}>
           {addresses?.map((el, i) => (
-            <BlockWrapper key={i}>
-              <Row>
-                <Text style={styles.blockText}>{el.Address}</Text>
-                <Switch
-                  trackColor={{
-                    false: 'rgba(30, 27, 38, 0.1)',
-                    true: appStyles.COLOR_PRIMARY,
-                  }}
-                  onValueChange={handleChange}
-                  value={el.Main}
-                />
-              </Row>
-            </BlockWrapper>
+            <SwipeRow
+              leftOpenValue={50}
+              stopLeftSwipe={50}
+              disableLeftSwipe
+              key={i}>
+              <View
+                style={{
+                  borderRadius: 20,
+                  height: 70,
+                  width: 100,
+                  backgroundColor: '#F74A4A',
+                }}>
+                <DeleteIcon />
+              </View>
+
+              <BlockWrapper blockStyles={{ justifyContent: 'center' }}>
+                <Row>
+                  <Text style={styles.blockText}>{el.street}</Text>
+                  <Switch
+                    trackColor={{
+                      false: 'rgba(30, 27, 38, 0.1)',
+                      true: appStyles.COLOR_PRIMARY,
+                    }}
+                    onValueChange={handleChange}
+                    value={el.main}
+                  />
+                </Row>
+              </BlockWrapper>
+            </SwipeRow>
           ))}
         </QueryWrapper>
       </ScrollView>

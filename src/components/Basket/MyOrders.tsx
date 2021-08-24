@@ -14,6 +14,7 @@ export default function MyOrders() {
 
   const { data } = useQuery<ordersType[]>(['user-orders'], async () => {
     const phone = await getLocalData('USER_PHONE');
+    if (!phone) return [];
     const response = await getResource('orders?phone=' + phone);
     return response.result;
   });

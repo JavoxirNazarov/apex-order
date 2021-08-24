@@ -9,12 +9,16 @@ type Props = {
   selectFunc: (val: string) => void;
   options: ISwitchSelectorOption[];
   switchStyle: ViewStyle;
+  value: string;
+  byLabel?: boolean;
 };
 
 export default function MySwitchSelector({
   selectFunc,
   options,
   switchStyle,
+  value,
+  byLabel = false,
 }: Props) {
   return options?.length ? (
     <SwitchSelector
@@ -27,8 +31,14 @@ export default function MySwitchSelector({
       borderColor="transparent"
       valuePadding={5}
       options={options}
-      initial={0}
-      onPress={(value: string) => selectFunc(value)}
+      initial={
+        value
+          ? options?.findIndex(el =>
+              byLabel ? el.label === value : el.value === value,
+            )
+          : 0
+      }
+      onPress={(val: string) => selectFunc(val)}
     />
   ) : null;
 }

@@ -3,7 +3,7 @@ import { StyleSheet, View, ViewStyle } from 'react-native';
 import appStyles from '../../constants/styles';
 
 type Props = {
-  children: JSX.Element[] | JSX.Element;
+  children: JSX.Element[] | JSX.Element | undefined;
   blockStyles?: ViewStyle;
 };
 

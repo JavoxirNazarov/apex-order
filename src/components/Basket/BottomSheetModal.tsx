@@ -17,7 +17,6 @@ import Row from '../Shared/Row';
 import cashIcon from '../../assets/icons/basket/cash-icon.png';
 import clickIcon from '../../assets/icons/basket/click-icon.png';
 import paymeIcon from '../../assets/icons/basket/payme-icon.png';
-import PlusBigIcon from '../../assets/icons/basket/Plus';
 import therminalIcon from '../../assets/icons/basket/therminal-icon.png';
 import BottomSheetHandle from '../Shared/BottomSheetHandle';
 import { useQuery } from 'react-query';
@@ -25,9 +24,9 @@ import { getResource } from '../../utils/api';
 import QueryWrapper from '../Shared/QueryWrapper';
 import MySwitchSelector from '../Shared/MySwitchSelector';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { SettingState } from '../../utils/types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { setOrderDate } from '../../redux/slices/order-slice';
 
 const paymentsRender = (namePayment: string) => {
   switch (namePayment) {
@@ -54,8 +53,6 @@ type Props = {
   changeOrderType: (val: string) => void;
   paymentType: string;
   setPaymentType: (val: string) => void;
-  orderDate: Date;
-  setOrderDate: SettingState<Date>;
   orderPrice: number;
   bottomSheetModalRef: RefObject<BottomSheetModal>;
   closeBottomSheet: () => void;
@@ -68,15 +65,16 @@ export default function BottomSheet({
   changeOrderType,
   paymentType,
   setPaymentType,
-  orderDate,
-  setOrderDate,
   orderPrice,
   bottomSheetModalRef,
   closeBottomSheet,
   navigation,
   order,
 }: Props) {
-  const { address } = useSelector((state: RootState) => state.orderSlice);
+  const dispatch = useDispatch();
+  const { address, orderDate } = useSelector(
+    (state: RootState) => state.orderSlice,
+  );
   const snapPoints = useMemo(() => ['45%', '62%'], []);
 
   const {
@@ -90,7 +88,7 @@ export default function BottomSheet({
 
   const onTimePick = (_: any, selectedDate: any) => {
     const currentDate = selectedDate || orderDate;
-    setOrderDate(currentDate);
+    dispatch(setOrderDate(currentDate));
   };
 
   return (
@@ -122,7 +120,7 @@ export default function BottomSheet({
                 Добавить адрес доставки
               </Text>
               <View style={sheetStyles.addingBlockBtn}>
-                <PlusBigIcon />
+                <ContactIcon fill="#fff" />
               </View>
             </Row>
           </TouchableOpacity>
@@ -147,6 +145,7 @@ export default function BottomSheet({
             ]}
             selectFunc={changeOrderType}
             switchStyle={sheetStyles.switch}
+            value={orderType}
           />
 
           {orderType === 'true' && (
@@ -158,7 +157,8 @@ export default function BottomSheet({
                 mode={'time'}
                 is24Hour={true}
                 display="spinner"
-                style={{ height: 150 }}
+                textColor={appStyles.COLOR_PRIMARY}
+                style={sheetStyles.IOSTimePicker}
                 locale="ru-RU"
                 onChange={onTimePick}
               />
@@ -263,6 +263,13 @@ const sheetStyles = StyleSheet.create({
     opacity: 0.5,
   },
   switch: {
+    marginBottom: 20,
+  },
+  IOSTimePicker: {
+    height: 130,
+    borderColor: appStyles.COLOR_PRIMARY,
+    borderWidth: 1,
+    borderRadius: 10,
     marginBottom: 20,
   },
   labelText: {

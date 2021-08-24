@@ -1,7 +1,6 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import SwitchSelector from 'react-native-switch-selector';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import ScrollLayoutWithBtn from '../components/Layouts/ScrollLayoutWithBtn';
@@ -125,19 +124,26 @@ export default function Product({ route, navigation }: Props) {
             <>
               <PaddWrapper>
                 {!!sizeOptions?.length && (
-                  <SwitchSelector
-                    selectedColor="#fff"
-                    textColor={appStyles.FONT_COLOR_SECONDARY}
-                    buttonColor={appStyles.COLOR_PRIMARY}
-                    hasPadding
-                    height={50}
-                    style={styles.select}
-                    borderColor="transparent"
-                    valuePadding={5}
+                  <MySwitchSelector
                     options={sizeOptions}
-                    initial={0}
-                    onPress={(value: string) => setSelectedSize(value)}
+                    selectFunc={setSelectedSize}
+                    switchStyle={styles.select}
+                    value={selectedSize}
+                    byLabel
                   />
+                  // <SwitchSelector
+                  //   selectedColor="#fff"
+                  //   textColor={appStyles.FONT_COLOR_SECONDARY}
+                  //   buttonColor={appStyles.COLOR_PRIMARY}
+                  //   hasPadding
+                  //   height={50}
+                  //   style={styles.select}
+                  //   borderColor="transparent"
+                  //   valuePadding={5}
+                  //   options={sizeOptions}
+                  //   initial={0}
+                  //   onPress={(value: string) => setSelectedSize(value)}
+                  // />
                 )}
 
                 <Text style={styles.saucesLabel}>Добавка к пицце</Text>
@@ -163,6 +169,7 @@ export default function Product({ route, navigation }: Props) {
                   options={variantOptions}
                   selectFunc={setSelectedVariantUID}
                   switchStyle={styles.select}
+                  value={selectedVariantUID}
                 />
               )}
             </PaddWrapper>

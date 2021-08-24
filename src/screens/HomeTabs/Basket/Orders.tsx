@@ -25,17 +25,17 @@ import {
 import { RootState } from '../../../redux/store';
 import { sendData } from '../../../utils/api';
 import { getLocalData } from '../../../utils/helpers/localStorage';
+import moment from 'moment';
 
 export default function Orders({ navigation, route }: any) {
   const dispatch = useDispatch();
   const { initialOrder } = route?.params;
-  const { products, address } = useSelector(
+  const { products, address, orderDate } = useSelector(
     (state: RootState) => state.orderSlice,
   );
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [orderType, setOrderType] = useState('false');
   const [paymentType, setPaymentType] = useState('');
-  const [orderDate, setOrderDate] = useState(new Date());
   // * CREATING ORDERS STATES
 
   const openBottomSheet = useCallback(async () => {
@@ -78,12 +78,14 @@ export default function Orders({ navigation, route }: any) {
       Pickup: orderType,
       Address: address,
       Phone,
+      PickupTime: moment(orderDate).format('YYYYMMDDHHmmss'),
+      UIDStructure: '716174b8-af8f-11ea-9e54-502b73d5e1bd',
     };
     sendData('orders', orderBody)
-      .then(() => {
+      .then(res => {
         closeBottomSheet();
         dispatch(refreshOrderState());
-        navigation.navigate('main');
+        navigation.navigate('order', { UID: res?.result });
       })
       .catch(err => console.log(err.message));
   };
@@ -147,8 +149,6 @@ export default function Orders({ navigation, route }: any) {
         changeOrderType={changeOrderType}
         paymentType={paymentType}
         setPaymentType={setPaymentType}
-        orderDate={orderDate}
-        setOrderDate={setOrderDate}
         bottomSheetModalRef={bottomSheetModalRef}
         orderPrice={orderPrice}
         navigation={navigation}
