@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { setOrderDate } from '../../redux/slices/order-slice';
 import { NavigationType } from '../../utils/types';
+import moment from 'moment';
 
 const paymentsRender = (namePayment: string) => {
   switch (namePayment) {
@@ -88,7 +89,8 @@ export default function BottomSheet({
   });
 
   const onTimePick = (_: any, selectedDate: any) => {
-    const currentDate = selectedDate || orderDate;
+    const currentDate =
+      moment(selectedDate).format('YYYYMMDDHHmmss') || orderDate;
     dispatch(setOrderDate(currentDate));
   };
 
@@ -154,7 +156,7 @@ export default function BottomSheet({
               <Text style={sheetStyles.labelText}>Время приезда </Text>
               <DateTimePicker
                 testID="dateTimePicker"
-                value={orderDate}
+                value={moment(orderDate, 'YYYYMMDDHHmmss').toDate()}
                 mode={'time'}
                 is24Hour={true}
                 display="spinner"

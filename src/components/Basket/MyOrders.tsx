@@ -2,20 +2,20 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import PayIcon from '../../assets/icons/Play';
 import appStyles from '../../constants/styles';
+import { RootState } from '../../redux/store';
 import { ordersType } from '../../screens/HomeTabs/Profile/History';
 import { getResource } from '../../utils/api';
-import { getLocalData } from '../../utils/helpers/localStorage';
 import { NavigationType } from '../../utils/types';
 import Row from '../Shared/Row';
 
 export default function MyOrders() {
   const navigation = useNavigation<NavigationType>();
+  const { phone } = useSelector((state: RootState) => state.auth);
 
   const { data } = useQuery<ordersType[]>(['user-orders'], async () => {
-    const phone = await getLocalData('USER_PHONE');
-    if (!phone) return [];
     const response = await getResource('orders?phone=' + phone);
     return response.result;
   });

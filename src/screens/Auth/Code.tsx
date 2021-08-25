@@ -1,61 +1,57 @@
 import React, { useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+import { useDispatch, useSelector } from 'react-redux';
 import appStyles from '../../constants/styles';
-import { SettingState, SetUserStepType } from '../../utils/types';
-import UserInfoLayout from '../Layouts/UserInfoLayout';
+import { setCode } from '../../redux/slices/auth-slice';
+import { RootState } from '../../redux/store';
+import UserInfoLayout from '../../components/Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {
-  setStepName: SetUserStepType;
-  code: string;
-  setCode: SettingState<string>;
+  navigation: any;
 };
 
-export default function Code({
-  setStepName,
-  code,
-  setCode,
-}: PhoneComponentProps) {
-  const handleNextStep = () => setStepName('NAME');
-  const onBackPress = () => setStepName('PHONE');
+export default function Code({ navigation }: PhoneComponentProps) {
+  const handleNextStep = () => navigation.push('auth-name');
+  const onBackPress = () => navigation.push('auth-phone');
+  const dispatch = useDispatch();
+  const { code } = useSelector((state: RootState) => state.auth);
 
   const pinRef = useRef(null);
 
   const handlingCode = (val: string) => {
+    dispatch(setCode(val));
     if (val === '1234') handleNextStep();
-    setCode(val);
   };
 
   return (
     <UserInfoLayout handleNextStep={handleNextStep} onBackPress={onBackPress}>
-      <>
-        <Text style={styles.textContainer}>
-          <Text style={styles.text1}>Введите </Text>
-          <Text style={[styles.text1, styles.text2]}>код</Text>
+      <Text style={styles.textContainer}>
+        <Text style={styles.text1}>Введите </Text>
+        <Text style={[styles.text1, styles.text2]}>код</Text>
+      </Text>
+      <View style={styles.subTextContainer}>
+        <Text style={styles.subText}>
+          Введите 4-значный код, который мы отправили на
         </Text>
-        <View style={styles.subTextContainer}>
-          <Text style={styles.subText}>
-            Введите 4-значный код, который мы отправили на
-          </Text>
-          <Text style={[styles.subText, styles.subTextNumber]}>
-            +998 92 6542198
-          </Text>
-        </View>
+        <Text style={[styles.subText, styles.subTextNumber]}>
+          +998 92 6542198
+        </Text>
+      </View>
 
-        <SmoothPinCodeInput
-          ref={pinRef}
-          value={code}
-          onTextChange={handlingCode}
-          cellStyle={styles.input}
-          cellStyleFocused={styles.input_focused}
-          textStyle={styles.inputText}
-          textStyleFocused={styles.inputText_focused}
-          containerStyle={styles.inputContainer}
-          cellSpacing={10}
-          restrictToNumbers
-          autoFocus
-        />
-      </>
+      <SmoothPinCodeInput
+        ref={pinRef}
+        value={code}
+        onTextChange={handlingCode}
+        cellStyle={styles.input}
+        cellStyleFocused={styles.input_focused}
+        textStyle={styles.inputText}
+        textStyleFocused={styles.inputText_focused}
+        containerStyle={styles.inputContainer}
+        cellSpacing={10}
+        restrictToNumbers
+        autoFocus
+      />
     </UserInfoLayout>
   );
 }

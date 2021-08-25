@@ -129,21 +129,7 @@ export default function Product({ route, navigation }: Props) {
                     selectFunc={setSelectedSize}
                     switchStyle={styles.select}
                     value={selectedSize}
-                    byLabel
                   />
-                  // <SwitchSelector
-                  //   selectedColor="#fff"
-                  //   textColor={appStyles.FONT_COLOR_SECONDARY}
-                  //   buttonColor={appStyles.COLOR_PRIMARY}
-                  //   hasPadding
-                  //   height={50}
-                  //   style={styles.select}
-                  //   borderColor="transparent"
-                  //   valuePadding={5}
-                  //   options={sizeOptions}
-                  //   initial={0}
-                  //   onPress={(value: string) => setSelectedSize(value)}
-                  // />
                 )}
 
                 <Text style={styles.saucesLabel}>Добавка к пицце</Text>
@@ -170,6 +156,7 @@ export default function Product({ route, navigation }: Props) {
                   selectFunc={setSelectedVariantUID}
                   switchStyle={styles.select}
                   value={selectedVariantUID}
+                  byLabel
                 />
               )}
             </PaddWrapper>

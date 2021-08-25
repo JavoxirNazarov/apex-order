@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import moment from 'moment';
 
 export interface IOrderProduct {
   UIDProduct: string;
@@ -18,13 +19,13 @@ interface IAddress {
 interface IState {
   products: IOrderProduct[];
   address: IAddress | null;
-  orderDate: Date;
+  orderDate: string;
 }
 
 const initialState: IState = {
   products: [],
   address: null,
-  orderDate: new Date(),
+  orderDate: moment().format(),
 };
 
 export const orderSlice = createSlice({
@@ -75,7 +76,7 @@ export const orderSlice = createSlice({
     setAddress: (state, { payload }: PayloadAction<IAddress>) => {
       state.address = payload;
     },
-    setOrderDate: (state, { payload }: PayloadAction<Date>) => {
+    setOrderDate: (state, { payload }: PayloadAction<string>) => {
       state.orderDate = payload;
     },
     refreshOrderState: () => {

@@ -143,7 +143,8 @@ export default function Order({
               <BlockWrapper>
                 <Text>Оцените нас</Text>
 
-                <TouchableOpacity onPress={() => navigation.navigate('main')}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('home-tabs')}>
                   <Text>Отзыв</Text>
                 </TouchableOpacity>
               </BlockWrapper>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -16,21 +16,13 @@ import SettingsIcon from '../../../assets/icons/profile/Settings';
 import ClockIcon from '../../../assets/icons/profile/Clock';
 import ArrowIcon from '../../../assets/icons/Arrow';
 import ContactIcon from '../../../assets/icons/tabs/Contacts';
-import { useFocusEffect } from '@react-navigation/native';
-import { getLocalData } from '../../../utils/helpers/localStorage';
 import CustomBottomSheet from '../../../components/Shared/CustomBottomSheet';
 import { NavigationType } from '../../../utils/types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 export default function Owner({ navigation }: { navigation: NavigationType }) {
-  const [registered, setRegistered] = useState(true);
-
-  useFocusEffect(
-    useCallback(() => {
-      getLocalData('USER_PHONE').then(user => {
-        setRegistered(user !== null);
-      });
-    }, []),
-  );
+  const { name } = useSelector((state: RootState) => state.auth);
 
   return (
     <View style={styles.container}>
@@ -54,7 +46,7 @@ export default function Owner({ navigation }: { navigation: NavigationType }) {
 
       <CustomBottomSheet handleComponent={<BottomSheetHandle />}>
         <PaddWrapper>
-          {registered ? (
+          {name ? (
             <>
               <TouchableOpacity
                 style={styles.row}
@@ -86,9 +78,7 @@ export default function Owner({ navigation }: { navigation: NavigationType }) {
           ) : (
             <TouchableOpacity
               style={styles.row}
-              onPress={() =>
-                navigation.navigate('authorization', { fromBasket: false })
-              }>
+              onPress={() => navigation.navigate('auth-phone')}>
               <View style={styles.rowIconWraper}>
                 <ContactIcon width={15.3} height={18} fill="#1E1B26" />
               </View>

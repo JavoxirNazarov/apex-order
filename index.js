@@ -10,14 +10,19 @@ import { name as appName } from './app.json';
 import { store } from './src/redux/store';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
 
+const persistor = persistStore(store);
 const queryClient = new QueryClient();
 
 const myApp = () => (
   <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    <PersistGate loading={null} persistor={persistor}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </PersistGate>
   </Provider>
 );
 

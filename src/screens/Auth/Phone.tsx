@@ -1,46 +1,38 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import appStyles from '../../constants/styles';
-import {
-  NavigationType,
-  SettingState,
-  SetUserStepType,
-} from '../../utils/types';
-import UserInfoLayout from '../Layouts/UserInfoLayout';
+import { setPhone } from '../../redux/slices/auth-slice';
+import { RootState } from '../../redux/store';
+import { NavigationType } from '../../utils/types';
+import UserInfoLayout from '../../components/Layouts/UserInfoLayout';
 
 export type PhoneComponentProps = {
-  setStepName: SetUserStepType;
-  phone: string;
-  setPhone: SettingState<string>;
+  navigation: NavigationType;
 };
 
-export default function Phone({
-  setStepName,
-  phone,
-  setPhone,
-}: PhoneComponentProps) {
-  const navigation = useNavigation<NavigationType>();
-  const handleNextStep = () => setStepName('CODE');
+export default function Phone({ navigation }: PhoneComponentProps) {
+  const dispatch = useDispatch();
+  const { phone } = useSelector((state: RootState) => state.auth);
+
+  const handleNextStep = () => navigation.push('auth-code');
   const goBack = () => navigation.goBack();
 
   return (
     <UserInfoLayout handleNextStep={handleNextStep} onBackPress={goBack}>
-      <>
-        <Text style={styles.textContainer}>
-          <Text style={styles.text1}>Для оформления заказа</Text>
-          <Text style={[styles.text1, styles.text2]}> нужен ваш телефон</Text>
-        </Text>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputText}>+998</Text>
-          <View style={styles.inputDivider} />
-          <TextInput
-            onChangeText={setPhone}
-            defaultValue={phone}
-            style={[styles.inputText, styles.input]}
-          />
-        </View>
-      </>
+      <Text style={styles.textContainer}>
+        <Text style={styles.text1}>Для оформления заказа</Text>
+        <Text style={[styles.text1, styles.text2]}> нужен ваш телефон</Text>
+      </Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputText}>+998</Text>
+        <View style={styles.inputDivider} />
+        <TextInput
+          onChangeText={text => dispatch(setPhone(text))}
+          defaultValue={phone}
+          style={[styles.inputText, styles.input]}
+        />
+      </View>
     </UserInfoLayout>
   );
 }

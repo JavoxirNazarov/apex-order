@@ -1,15 +1,16 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
-import { useQuery } from 'react-query';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { useSelector } from 'react-redux';
+import DeleteIcon from '../../../assets/icons/Delete';
 import BlockWrapper from '../../../components/Profile/BlockWrapper';
 import Header from '../../../components/Profile/Header';
-import QueryWrapper from '../../../components/Shared/QueryWrapper';
+import ErrorText from '../../../components/Shared/ErrorText';
+import LoadingIndicator from '../../../components/Shared/LoadingIndicator';
 import Row from '../../../components/Shared/Row';
 import appStyles from '../../../constants/styles';
-import { getResource } from '../../../utils/api';
-import { SwipeRow } from 'react-native-swipe-list-view';
-import { getLocalData } from '../../../utils/helpers/localStorage';
-import DeleteIcon from '../../../assets/icons/Delete';
+import { RootState } from '../../../redux/store';
+import { getResource, sendData } from '../../../utils/api';
 
 interface IAdress {
   street: string;
@@ -19,63 +20,88 @@ interface IAdress {
 }
 
 export default function Addresses() {
-  const {
-    data: addresses,
-    isError,
-    isLoading,
-  } = useQuery<IAdress[]>('user-addresses', async () => {
-    const phone = await getLocalData('USER_PHONE');
-    if (!phone) return [];
-    const response = await getResource(`clients?phone=${phone}&Address=true`);
-    return response?.result;
-  });
+  const { phone, name } = useSelector((state: RootState) => state.auth);
+  const [addresses, setAddresses] = useState<IAdress[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleChange = () => {};
+  useEffect(() => {
+    getResource(`clients?phone=${phone}&Address=true`)
+      .then(response => setAddresses(response?.result))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [phone]);
+
+  const handleSwitch = async (idx: number) => {
+    const newList = addresses?.map((el, index) => {
+      if (index === idx) return { ...el, main: true };
+      return { ...el, main: false };
+    });
+    sendData('clients', {
+      phone,
+      name,
+      addresses: newList,
+    })
+      .then(() => setAddresses(newList))
+      .catch(() => {});
+  };
+
+  const handleDelete = async (idx: number) => {
+    const newList = addresses?.filter((_, index) => index !== idx);
+    sendData('clients', {
+      phone,
+      name,
+      addresses: newList,
+    })
+      .then(() => setAddresses(newList))
+      .catch(() => {});
+  };
 
   return (
     <View style={styles.container}>
       <Header text="Адреса доставки" />
 
-      <ScrollView style={styles.scroll}>
-        <QueryWrapper
-          isError={isError}
-          isLoading={isLoading}
-          indicatorSize="large"
-          IndicatorStyle={styles.feetbackMargin}
-          errorTextStyle={styles.feetbackMargin}>
-          {addresses?.map((el, i) => (
-            <SwipeRow
-              leftOpenValue={50}
-              stopLeftSwipe={50}
-              disableLeftSwipe
-              key={i}>
-              <View
-                style={{
-                  borderRadius: 20,
-                  height: 70,
-                  width: 100,
-                  backgroundColor: '#F74A4A',
-                }}>
-                <DeleteIcon />
-              </View>
-
-              <BlockWrapper blockStyles={{ justifyContent: 'center' }}>
-                <Row>
-                  <Text style={styles.blockText}>{el.street}</Text>
-                  <Switch
-                    trackColor={{
-                      false: 'rgba(30, 27, 38, 0.1)',
-                      true: appStyles.COLOR_PRIMARY,
-                    }}
-                    onValueChange={handleChange}
-                    value={el.main}
-                  />
-                </Row>
-              </BlockWrapper>
-            </SwipeRow>
-          ))}
-        </QueryWrapper>
-      </ScrollView>
+      {loading ? (
+        <LoadingIndicator size="large" IndicatorStyle={styles.feetbackMargin} />
+      ) : addresses.length ? (
+        <SwipeListView
+          data={addresses}
+          keyExtractor={(_, index) => index.toString()}
+          useNativeDriver
+          leftOpenValue={60}
+          stopLeftSwipe={60}
+          disableLeftSwipe
+          renderHiddenItem={(data, rowMap) => (
+            <TouchableOpacity
+              style={styles.deleteBlock}
+              onPress={() => {
+                if (!data?.item?.main) {
+                  handleDelete(data?.index);
+                }
+                rowMap[data?.index.toString()].closeRow();
+              }}>
+              <DeleteIcon />
+            </TouchableOpacity>
+          )}
+          renderItem={data => (
+            <BlockWrapper blockStyles={styles.blockStyle}>
+              <Row>
+                <Text style={styles.blockText}>{data?.item?.street}</Text>
+                <Switch
+                  trackColor={{
+                    false: 'rgba(30, 27, 38, 0.1)',
+                    true: appStyles.COLOR_PRIMARY,
+                  }}
+                  disabled={data?.item?.main}
+                  onValueChange={() => handleSwitch(data?.index)}
+                  value={data?.item?.main}
+                />
+              </Row>
+            </BlockWrapper>
+          )}
+        />
+      ) : (
+        <ErrorText errorTextStyle={styles.feetbackMargin} />
+      )}
     </View>
   );
 }
@@ -95,6 +121,19 @@ const styles = StyleSheet.create({
     color: appStyles.FONT_COLOR,
     fontSize: 24,
     marginLeft: 20,
+  },
+
+  deleteBlock: {
+    borderRadius: 20,
+    height: 70,
+    width: 90,
+    paddingRight: 20,
+    backgroundColor: '#F74A4A',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  blockStyle: {
+    justifyContent: 'center',
   },
   blockText: {
     width: '50%',

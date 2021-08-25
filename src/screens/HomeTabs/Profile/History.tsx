@@ -1,14 +1,15 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import RefreshIcon from '../../../assets/icons/profile/Refresh';
 import BlockWrapper from '../../../components/Profile/BlockWrapper';
 import Header from '../../../components/Profile/Header';
 import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import Row from '../../../components/Shared/Row';
 import appStyles from '../../../constants/styles';
+import { RootState } from '../../../redux/store';
 import { getResource } from '../../../utils/api';
-import { getLocalData } from '../../../utils/helpers/localStorage';
 
 export type ordersType = {
   UIDOrder: string;
@@ -22,23 +23,15 @@ export type ordersType = {
 };
 
 export default function History() {
-  const [userPhone] = useState(async () => {
-    const phone = await getLocalData('USER_PHONE');
-    return phone;
-  });
-
+  const { phone } = useSelector((state: RootState) => state.auth);
   const {
     isLoading,
     isError,
     data: orders,
-  } = useQuery<ordersType[]>(
-    ['user-orders'],
-    async () => {
-      const response = await getResource('orders?phone=' + userPhone);
-      return response.result;
-    },
-    { enabled: !!userPhone },
-  );
+  } = useQuery<ordersType[]>(['user-orders'], async () => {
+    const response = await getResource('orders?phone=' + phone);
+    return response.result;
+  });
 
   return (
     <View style={styles.container}>

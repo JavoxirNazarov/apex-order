@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import LogOutIcon from '../../../assets/icons/profile/LogOut';
 import AnimatedInput from '../../../components/Profile/AnimatedInput';
 import Header from '../../../components/Profile/Header';
 import appStyles from '../../../constants/styles';
+import { logOut, setName, setPhone } from '../../../redux/slices/auth-slice';
+import { RootState } from '../../../redux/store';
 import { sendData } from '../../../utils/api';
-import {
-  getLocalData,
-  removeLocalData,
-  storeLocalData,
-} from '../../../utils/helpers/localStorage';
 import { NavigationType } from '../../../utils/types';
 
 export default function Settings({
@@ -17,40 +15,29 @@ export default function Settings({
 }: {
   navigation: NavigationType;
 }) {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-
-  useEffect(() => {
-    (async () => {
-      const localPhone = await getLocalData('USER_PHONE');
-      const localName = await getLocalData('USER_NAME');
-      setName(localName || '');
-      setPhone(localPhone || '');
-    })();
-  }, []);
+  const dispatch = useDispatch();
+  const { phone, name } = useSelector((state: RootState) => state.auth);
+  const [newName, setNewName] = useState(name);
+  const [newPhone, setNewPhone] = useState(phone);
 
   const handlingPhoneText = (text: string) => {
     if (text.length === 7) {
     }
-    setPhone(text);
+    setNewPhone(text);
   };
 
   const saveUser = () => {
     const body = {
-      name,
-      phone,
+      newName,
+      newPhone,
     };
     sendData('clients', body)
-      .then(() => storeLocalData('USER_PHONE', phone))
-      .then(() => storeLocalData('USER_NAME', name))
+      .then(() => {
+        dispatch(setName(newName));
+        dispatch(setPhone(newPhone));
+      })
       .then(() => navigation.navigate('profile', { screen: 'user' }))
       .catch(err => console.log(err));
-  };
-
-  const logOut = () => {
-    removeLocalData('USER_PHONE');
-    removeLocalData('USER_NAME');
-    navigation.navigate('profile', { screen: 'user' });
   };
 
   return (
@@ -61,13 +48,18 @@ export default function Settings({
         </Text>
       </Header>
 
-      <AnimatedInput text={name} setText={setName} labelText="Имя" />
+      <AnimatedInput text={newName} setText={setNewName} labelText="Имя" />
       <AnimatedInput
-        text={phone}
+        text={newPhone}
         setText={handlingPhoneText}
         labelText="Телефон"
       />
-      <TouchableOpacity style={styles.exitRow} onPress={logOut}>
+      <TouchableOpacity
+        style={styles.exitRow}
+        onPress={() => {
+          dispatch(logOut());
+          navigation.navigate('profile', { screen: 'user' });
+        }}>
         <LogOutIcon />
         <Text style={styles.exitText}>Выход</Text>
       </TouchableOpacity>

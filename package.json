@@ -21,6 +21,8 @@
     "@react-navigation/native-stack": "^6.0.1",
     "@reduxjs/toolkit": "^1.6.1",
     "moment": "^2.29.1",
+    "patch-package": "^6.4.7",
+    "postinstall-postinstall": "^2.1.0",
     "react": "17.0.1",
     "react-native": "0.64.1",
     "react-native-flash-message": "^0.1.23",
@@ -40,7 +42,8 @@
     "react-native-switch-selector": "^2.1.4",
     "react-native-x2-carousel": "^1.0.1",
     "react-query": "^3.19.5",
-    "react-redux": "^7.2.4"
+    "react-redux": "^7.2.4",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

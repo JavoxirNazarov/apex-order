@@ -12,9 +12,11 @@ import {
 import appStyles from './src/constants/styles';
 import HomeTabs from './src/screens/HomeTabs';
 import Product from './src/screens/Product';
-import UserInfo from './src/screens/UserInfo';
 import FlashMessage from 'react-native-flash-message';
 import Map from './src/screens/Map';
+import Phone from './src/screens/Auth/Phone';
+import Code from './src/screens/Auth/Code';
+import Name from './src/screens/Auth/Name';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,8 +29,8 @@ const App = () => {
         translucent
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
-      <View style={styles.container}>
-        <BottomSheetModalProvider>
+      <BottomSheetModalProvider>
+        <View style={styles.container}>
           <NavigationContainer>
             <Stack.Navigator
               screenOptions={{
@@ -37,13 +39,16 @@ const App = () => {
               }}>
               <Stack.Screen name="home-tabs" component={HomeTabs} />
               <Stack.Screen name="product" component={Product} />
-              <Stack.Screen name="authorization" component={UserInfo} />
               <Stack.Screen name="map" component={Map} />
+
+              <Stack.Screen name="auth-phone" component={Phone} />
+              <Stack.Screen name="auth-code" component={Code} />
+              <Stack.Screen name="auth-name" component={Name} />
             </Stack.Navigator>
           </NavigationContainer>
-        </BottomSheetModalProvider>
-        <FlashMessage position="top" />
-      </View>
+          <FlashMessage position="top" />
+        </View>
+      </BottomSheetModalProvider>
     </SafeAreaView>
   );
 };

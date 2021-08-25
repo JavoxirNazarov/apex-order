@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import CencelIcon from '../../assets/icons/Cencel';
 import appStyles from '../../constants/styles';
 import { ChildrenType } from '../../utils/types';
@@ -18,15 +24,19 @@ export default function UserInfoLayout({
   onBackPress,
 }: PropsType) {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onBackPress} style={styles.backCircle}>
-        <CencelIcon />
-      </TouchableOpacity>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={onBackPress} style={styles.backCircle}>
+          <CencelIcon />
+        </TouchableOpacity>
 
-      <PaddWrapper>{children}</PaddWrapper>
+        <PaddWrapper>{children}</PaddWrapper>
 
-      <AcceptFooter onPress={handleNextStep} text="Далее" />
-    </View>
+        <AcceptFooter onPress={handleNextStep} text="Далее" />
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 

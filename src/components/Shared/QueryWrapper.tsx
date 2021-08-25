@@ -1,14 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, ViewStyle } from 'react-native';
-import appStyles from '../../constants/styles';
+import { TextStyle, ViewStyle } from 'react-native';
 import { ChildrenType } from '../../utils/types';
+import ErrorText from './ErrorText';
 import LoadingIndicator from './LoadingIndicator';
 
 type Props = {
   children: ChildrenType;
   isLoading: boolean;
   isError: boolean;
-  errorTextStyle?: ViewStyle;
+  errorTextStyle?: TextStyle;
   IndicatorStyle?: ViewStyle;
   indicatorSize?: number | 'small' | 'large' | undefined;
 };
@@ -28,18 +28,8 @@ export default function QueryWrapper({
   }
 
   if (isError) {
-    return <Text style={[styles.errorText, errorTextStyle]}>Ошибка</Text>;
+    return <ErrorText errorTextStyle={errorTextStyle} />;
   }
 
   return <>{children}</>;
 }
-
-const styles = StyleSheet.create({
-  errorText: {
-    marginTop: 20,
-    fontSize: 20,
-    color: 'red',
-    fontFamily: appStyles.FONT,
-    textAlign: 'center',
-  },
-});

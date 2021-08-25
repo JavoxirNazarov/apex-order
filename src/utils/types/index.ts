@@ -8,8 +8,6 @@ import { Dispatch, SetStateAction } from 'react';
 
 export type UserStepsType = 'PHONE' | 'CODE' | 'NAME';
 
-export type SetUserStepType = Dispatch<SetStateAction<UserStepsType>>;
-
 export type SettingState<T> = Dispatch<SetStateAction<T>>;
 
 export type ChildrenType = JSX.Element | JSX.Element[] | undefined;
@@ -45,7 +43,9 @@ export type NavigationType = CompositeNavigationProp<
     'home-tabs': undefined;
     home: undefined;
     product: { UID: string };
-    authorization: { fromBasket: boolean };
+    'auth-phone': undefined;
+    'auth-code': undefined;
+    'auth-name': undefined;
     map: undefined;
   }>
 >;

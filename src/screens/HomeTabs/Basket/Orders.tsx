@@ -1,7 +1,7 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import React, {
   useCallback,
-  useEffect,
+  // useEffect,
   useMemo,
   useRef,
   useState,
@@ -24,21 +24,23 @@ import {
 } from '../../../redux/slices/order-slice';
 import { RootState } from '../../../redux/store';
 import { sendData } from '../../../utils/api';
-import { getLocalData } from '../../../utils/helpers/localStorage';
 import moment from 'moment';
 import { NavigationType } from '../../../utils/types';
 
 export default function Orders({
   navigation,
-  route,
-}: {
+}: // route,
+{
   navigation: NavigationType;
-  route: { params: { initialOrder: boolean } };
+  // route: { params: { initialOrder: boolean } };
 }) {
   const dispatch = useDispatch();
-  const { initialOrder } = route?.params;
+  // const { initialOrder } = route?.params;
   const { products, address, orderDate } = useSelector(
     (state: RootState) => state.orderSlice,
+  );
+  const { isInitialOrder, phone } = useSelector(
+    (state: RootState) => state.auth,
   );
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [orderType, setOrderType] = useState('false');
@@ -46,11 +48,10 @@ export default function Orders({
   // * CREATING ORDERS STATES
 
   const openBottomSheet = useCallback(async () => {
-    const userPhone = await getLocalData('USER_PHONE');
-    if (userPhone) {
-      bottomSheetModalRef.current?.present();
+    if (isInitialOrder) {
+      navigation.navigate('auth-phone');
     } else {
-      navigation.navigate('authorization', { fromBasket: true });
+      bottomSheetModalRef.current?.present();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -59,9 +60,9 @@ export default function Orders({
     bottomSheetModalRef.current?.dismiss();
   }, []);
 
-  useEffect(() => {
-    if (initialOrder) openBottomSheet();
-  }, [initialOrder, openBottomSheet]);
+  // useEffect(() => {
+  //   if (initialOrder) openBottomSheet();
+  // }, [initialOrder, openBottomSheet]);
 
   const changeOrderType = (val: string) => {
     setOrderType(val);
@@ -77,14 +78,12 @@ export default function Orders({
   }, [products]);
 
   const order = async () => {
-    const Phone = await getLocalData('USER_PHONE');
-
     const orderBody = {
       Goods: products,
       UIDPayment: paymentType,
       Pickup: orderType,
       Address: address,
-      Phone,
+      Phone: phone,
       PickupTime: moment(orderDate).format('YYYYMMDDHHmmss'),
       UIDStructure: '716174b8-af8f-11ea-9e54-502b73d5e1bd',
     };
@@ -92,7 +91,10 @@ export default function Orders({
       .then(res => {
         closeBottomSheet();
         dispatch(refreshOrderState());
-        navigation.navigate('order', { UID: res?.result });
+        navigation.navigate('basket', {
+          screen: 'order',
+          params: { UID: res?.result },
+        });
       })
       .catch(err => console.log(err.message));
   };
