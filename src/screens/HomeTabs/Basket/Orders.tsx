@@ -1,7 +1,7 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import React, {
   useCallback,
-  // useEffect,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -21,48 +21,63 @@ import {
   decrementProduct,
   incrementProduct,
   refreshOrderState,
+  setAddress,
 } from '../../../redux/slices/order-slice';
 import { RootState } from '../../../redux/store';
-import { sendData } from '../../../utils/api';
+import { getResource, sendData } from '../../../utils/api';
 import moment from 'moment';
 import { NavigationType } from '../../../utils/types';
+import { setFromBasket } from '../../../redux/slices/auth-slice';
+import { IAdress } from '../Profile/Addresses';
+import { showMessage } from 'react-native-flash-message';
 
 export default function Orders({
   navigation,
-}: // route,
-{
+  route,
+}: {
   navigation: NavigationType;
-  // route: { params: { initialOrder: boolean } };
+  route: { params: { openingSheet: boolean } };
 }) {
   const dispatch = useDispatch();
-  // const { initialOrder } = route?.params;
-  const { products, address, orderDate } = useSelector(
+  const { openingSheet } = route?.params;
+  const { products, address, orderDate, selectedStructure } = useSelector(
     (state: RootState) => state.orderSlice,
   );
-  const { isInitialOrder, phone } = useSelector(
+  const { phone, isSignedIn, name } = useSelector(
     (state: RootState) => state.auth,
   );
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [orderType, setOrderType] = useState('false');
   const [paymentType, setPaymentType] = useState('');
-  // * CREATING ORDERS STATES
 
-  const openBottomSheet = useCallback(async () => {
-    if (isInitialOrder) {
-      navigation.navigate('auth-phone');
-    } else {
+  const openBottomSheet = () => {
+    if (isSignedIn) {
       bottomSheetModalRef.current?.present();
+    } else {
+      dispatch(setFromBasket(true));
+      navigation.navigate('auth-phone');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const closeBottomSheet = useCallback(() => {
     bottomSheetModalRef.current?.dismiss();
   }, []);
 
-  // useEffect(() => {
-  //   if (initialOrder) openBottomSheet();
-  // }, [initialOrder, openBottomSheet]);
+  useEffect(() => {
+    if (openingSheet) openBottomSheet();
+
+    getResource<IAdress[]>(`clients?phone=${phone}&Address=true`)
+      .then(response => {
+        const adressesArray = response?.result;
+        if (adressesArray.length) {
+          const main = adressesArray?.find(el => el.main);
+          if (main) dispatch(setAddress(main));
+        }
+      })
+      .catch(() => {});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openingSheet]);
 
   const changeOrderType = (val: string) => {
     setOrderType(val);
@@ -78,6 +93,41 @@ export default function Orders({
   }, [products]);
 
   const order = async () => {
+    if (!paymentType) {
+      showMessage({
+        message: 'Ошибка',
+        description: 'Выберите тип оплаты!',
+        type: 'danger',
+      });
+      return;
+    }
+
+    if (!selectedStructure) {
+      showMessage({
+        message: 'Ошибка',
+        description: 'Выберите ближайший филиал!',
+        type: 'danger',
+      });
+      return;
+    }
+
+    if (!address) {
+      showMessage({
+        message: 'Ошибка',
+        description: 'Выберите адресс!',
+        type: 'danger',
+      });
+      return;
+    }
+
+    sendData('clients', {
+      phone,
+      name,
+      addresses: [{ ...address, main: true }],
+    })
+      .then(() => {})
+      .catch(() => {});
+
     const orderBody = {
       Goods: products,
       UIDPayment: paymentType,
@@ -85,7 +135,7 @@ export default function Orders({
       Address: address,
       Phone: phone,
       PickupTime: moment(orderDate).format('YYYYMMDDHHmmss'),
-      UIDStructure: '716174b8-af8f-11ea-9e54-502b73d5e1bd',
+      UIDStructure: selectedStructure?.UIDStructure,
     };
     sendData('orders', orderBody)
       .then(res => {

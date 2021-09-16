@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import appStyles from '../../constants/styles';
+import { RH, RW } from '../../utils/helpers/responsive';
 import LoadingIndicator from './LoadingIndicator';
 
 type PropsType = {
@@ -19,16 +20,12 @@ export default memo(function AcceptFooter({
   loading = false,
 }: PropsType) {
   return (
-    <View
-      style={[
-        styles.acceptContainer,
-        fixed ? styles.acceptContainer_fixed : {},
-      ]}>
+    <View style={fixed ? styles.acceptContainer_fixed : styles.acceptContainer}>
       {children}
       <TouchableOpacity
         disabled={loading}
         onPress={onPress}
-        style={styles.acceptBtn}>
+        style={[styles.acceptBtn, fixed && { height: 60 }]}>
         {loading ? (
           <LoadingIndicator colorWhite IndicatorStyle={styles.indicator} />
         ) : (
@@ -42,12 +39,17 @@ export default memo(function AcceptFooter({
 const styles = StyleSheet.create({
   acceptContainer: {
     marginTop: 'auto',
+    height: RH(80),
     width: '100%',
     backgroundColor: appStyles.BACKGROUND_DEFAULT,
     paddingVertical: 15,
     paddingHorizontal: appStyles.HORIZONTAL_PADDING,
   },
   acceptContainer_fixed: {
+    width: '100%',
+    backgroundColor: appStyles.BACKGROUND_DEFAULT,
+    paddingVertical: 15,
+    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
     position: 'absolute',
     bottom: 0,
     shadowColor: 'rgba(30, 27, 38, 0.05)',
@@ -61,10 +63,10 @@ const styles = StyleSheet.create({
   },
   acceptBtn: {
     flex: 1,
-    height: 50,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 200,
+    borderRadius: RW(200),
     backgroundColor: appStyles.COLOR_PRIMARY,
   },
   indicator: {

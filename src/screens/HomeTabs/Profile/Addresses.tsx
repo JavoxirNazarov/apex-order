@@ -5,14 +5,13 @@ import { useSelector } from 'react-redux';
 import DeleteIcon from '../../../assets/icons/Delete';
 import BlockWrapper from '../../../components/Profile/BlockWrapper';
 import Header from '../../../components/Profile/Header';
-import ErrorText from '../../../components/Shared/ErrorText';
 import LoadingIndicator from '../../../components/Shared/LoadingIndicator';
 import Row from '../../../components/Shared/Row';
 import appStyles from '../../../constants/styles';
 import { RootState } from '../../../redux/store';
 import { getResource, sendData } from '../../../utils/api';
 
-interface IAdress {
+export interface IAdress {
   street: string;
   lon: number;
   lat: number;
@@ -25,7 +24,7 @@ export default function Addresses() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getResource(`clients?phone=${phone}&Address=true`)
+    getResource<IAdress[]>(`clients?phone=${phone}&Address=true`)
       .then(response => setAddresses(response?.result))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -100,7 +99,7 @@ export default function Addresses() {
           )}
         />
       ) : (
-        <ErrorText errorTextStyle={styles.feetbackMargin} />
+        <Text style={styles.empty}>Пусто</Text>
       )}
     </View>
   );
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginLeft: 20,
   },
-
   deleteBlock: {
     borderRadius: 20,
     height: 70,
@@ -143,5 +141,11 @@ const styles = StyleSheet.create({
   },
   feetbackMargin: {
     marginTop: 50,
+  },
+  empty: {
+    marginTop: 20,
+    fontSize: 20,
+    fontFamily: appStyles.FONT,
+    textAlign: 'center',
   },
 });

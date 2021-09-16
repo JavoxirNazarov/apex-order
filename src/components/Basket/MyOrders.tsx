@@ -8,22 +8,27 @@ import appStyles from '../../constants/styles';
 import { RootState } from '../../redux/store';
 import { ordersType } from '../../screens/HomeTabs/Profile/History';
 import { getResource } from '../../utils/api';
+import { RH, RW } from '../../utils/helpers/responsive';
 import { NavigationType } from '../../utils/types';
+import QueryWrapper from '../Shared/QueryWrapper';
 import Row from '../Shared/Row';
 
 export default function MyOrders() {
   const navigation = useNavigation<NavigationType>();
   const { phone } = useSelector((state: RootState) => state.auth);
 
-  const { data } = useQuery<ordersType[]>(['user-orders'], async () => {
-    const response = await getResource('orders?phone=' + phone);
-    return response.result;
-  });
+  const { data, isLoading } = useQuery<ordersType[]>(
+    ['user-orders'],
+    async () => {
+      const response = await getResource('orders?phone=' + phone);
+      return response.result;
+    },
+  );
 
   const currentOrders = useMemo(() => data?.filter(el => !el?.Ready), [data]);
 
   return (
-    <>
+    <QueryWrapper isLoading={isLoading}>
       {currentOrders?.map((el, i) => (
         <TouchableOpacity
           key={i}
@@ -45,20 +50,20 @@ export default function MyOrders() {
           </Row>
         </TouchableOpacity>
       ))}
-    </>
+    </QueryWrapper>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 32,
-    paddingBottom: 20,
+    marginTop: RH(32),
+    paddingBottom: RH(20),
     borderBottomColor: appStyles.FONT_COLOR_SECONDARY,
     borderBottomWidth: 0.2,
   },
   title: {
     fontFamily: appStyles.FONT,
-    fontSize: 20,
+    fontSize: RW(20),
     color: appStyles.FONT_COLOR,
   },
   numRow: {
@@ -67,8 +72,8 @@ const styles = StyleSheet.create({
   },
   num: {
     fontFamily: appStyles.FONT,
-    fontSize: 18,
+    fontSize: RW(18),
     color: appStyles.FONT_COLOR,
-    marginRight: 5,
+    marginRight: RW(5),
   },
 });

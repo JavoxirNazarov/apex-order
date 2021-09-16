@@ -1,12 +1,14 @@
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { VibrancyView } from '@react-native-community/blur';
-import React, { RefObject, useMemo } from 'react';
+import { VibrancyView, BlurView } from '@react-native-community/blur';
+import React, { RefObject, useMemo, useState } from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import ContactIcon from '../../assets/icons/tabs/Contacts';
@@ -29,6 +31,7 @@ import { RootState } from '../../redux/store';
 import { setOrderDate } from '../../redux/slices/order-slice';
 import { NavigationType } from '../../utils/types';
 import moment from 'moment';
+import { RH, RW } from '../../utils/helpers/responsive';
 
 const paymentsRender = (namePayment: string) => {
   switch (namePayment) {
@@ -74,9 +77,11 @@ export default function BottomSheet({
   order,
 }: Props) {
   const dispatch = useDispatch();
-  const { address, orderDate } = useSelector(
+  const [timePick, setTimePick] = useState(false);
+  const { address, orderDate, selectedStructure } = useSelector(
     (state: RootState) => state.orderSlice,
   );
+
   const snapPoints = useMemo(() => ['45%', '62%'], []);
 
   const {
@@ -84,26 +89,113 @@ export default function BottomSheet({
     isError,
     isLoading,
   } = useQuery<PaymenyType[]>(['payments', orderType], async () => {
-    const response = await getResource(`payments?pickup=${orderType}`);
+    const response = await getResource<PaymenyType[]>(
+      `payments?pickup=${orderType}`,
+    );
     return response?.result;
   });
 
   const onTimePick = (_: any, selectedDate: any) => {
+    setTimePick(Platform.OS === 'ios');
     const currentDate =
       moment(selectedDate).format('YYYYMMDDHHmmss') || orderDate;
     dispatch(setOrderDate(currentDate));
   };
 
+  const selfOrder = orderType === 'true';
+
+  const renderPlace = () => {
+    if (selfOrder && selectedStructure?.Structure) {
+      return (
+        <View style={sheetStyles.locationBlock}>
+          <ContactIcon
+            opacity={0.5}
+            width={15}
+            height={18}
+            fill={appStyles.FONT_COLOR}
+          />
+          <Text style={sheetStyles.locationBlockText}>
+            {selectedStructure?.Structure}
+          </Text>
+        </View>
+      );
+    } else if (address?.street) {
+      return (
+        <View style={sheetStyles.locationBlock}>
+          <ContactIcon
+            opacity={0.5}
+            width={15}
+            height={18}
+            fill={appStyles.FONT_COLOR}
+          />
+          <Text style={sheetStyles.locationBlockText}>{address?.street}</Text>
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const renderPicker = () =>
+    Platform.OS === 'ios' ? (
+      <>
+        <Text style={sheetStyles.labelText}>Время приезда </Text>
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={moment(orderDate, 'YYYYMMDDHHmmss').toDate()}
+          mode={'time'}
+          is24Hour={true}
+          display="spinner"
+          textColor={appStyles.COLOR_PRIMARY}
+          style={sheetStyles.IOSTimePicker}
+          locale="ru-RU"
+          onChange={onTimePick}
+        />
+      </>
+    ) : (
+      <>
+        <Text style={sheetStyles.labelText}>Время приезда </Text>
+        <TouchableOpacity
+          style={sheetStyles.AndroidTimePicker}
+          onPress={() => setTimePick(true)}>
+          <Text style={sheetStyles.AndroidTimePickerText}>
+            {moment(orderDate, 'YYYYMMDDHHmmss').format('HH:mm')}
+          </Text>
+        </TouchableOpacity>
+        {timePick && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={moment(orderDate, 'YYYYMMDDHHmmss').toDate()}
+            mode="time"
+            is24Hour={true}
+            textColor={appStyles.COLOR_PRIMARY}
+            locale="ru-RU"
+            onChange={onTimePick}
+          />
+        )}
+      </>
+    );
+
   return (
     <BottomSheetModal
       handleComponent={BottomSheetHandle}
-      backdropComponent={() => (
-        <VibrancyView
-          blurType="dark"
-          style={sheetStyles.gradientBackdrop}
-          blurAmount={1}
-        />
-      )}
+      backdropComponent={() =>
+        Platform.OS === 'ios' ? (
+          <VibrancyView
+            blurType="dark"
+            style={sheetStyles.gradientBackdrop}
+            blurAmount={1}
+          />
+        ) : (
+          <TouchableWithoutFeedback onPress={closeBottomSheet}>
+            <BlurView
+              style={sheetStyles.gradientBackdrop}
+              blurType="dark"
+              blurAmount={1}
+            />
+          </TouchableWithoutFeedback>
+        )
+      }
       ref={bottomSheetModalRef}
       index={1}
       snapPoints={snapPoints}>
@@ -120,7 +212,9 @@ export default function BottomSheet({
             }}>
             <Row containerStyle={sheetStyles.addingBlock}>
               <Text style={sheetStyles.addingBlockText}>
-                Добавить адрес доставки
+                {selfOrder
+                  ? 'Указать локацию самовывоза'
+                  : 'Добавить адрес доставки'}
               </Text>
               <View style={sheetStyles.addingBlockBtn}>
                 <ContactIcon fill="#fff" />
@@ -128,19 +222,8 @@ export default function BottomSheet({
             </Row>
           </TouchableOpacity>
 
-          {address?.street && (
-            <View style={sheetStyles.locationBlock}>
-              <ContactIcon
-                opacity={0.5}
-                width={15}
-                height={18}
-                fill={appStyles.FONT_COLOR}
-              />
-              <Text style={sheetStyles.locationBlockText}>
-                {address?.street}
-              </Text>
-            </View>
-          )}
+          {renderPlace()}
+
           <MySwitchSelector
             options={[
               { label: 'Доставка', value: 'false' },
@@ -151,22 +234,7 @@ export default function BottomSheet({
             value={orderType}
           />
 
-          {orderType === 'true' && (
-            <>
-              <Text style={sheetStyles.labelText}>Время приезда </Text>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={moment(orderDate, 'YYYYMMDDHHmmss').toDate()}
-                mode={'time'}
-                is24Hour={true}
-                display="spinner"
-                textColor={appStyles.COLOR_PRIMARY}
-                style={sheetStyles.IOSTimePicker}
-                locale="ru-RU"
-                onChange={onTimePick}
-              />
-            </>
-          )}
+          {selfOrder && renderPicker()}
 
           <Text style={sheetStyles.labelText}>Cпособ оплаты</Text>
         </PaddWrapper>
@@ -183,9 +251,8 @@ export default function BottomSheet({
                 onPress={() => setPaymentType(payment?.UIDPayment)}
                 style={[
                   sheetStyles.paymentTypeItem,
-                  paymentType == payment?.UIDPayment
-                    ? sheetStyles.paymentTypeContainer_active
-                    : {},
+                  paymentType === payment?.UIDPayment &&
+                    sheetStyles.paymentTypeContainer_active,
                 ]}>
                 <Image source={paymentsRender(payment?.Name)} />
               </TouchableOpacity>
@@ -193,7 +260,7 @@ export default function BottomSheet({
           </ScrollView>
         </QueryWrapper>
       </BottomSheetScrollView>
-      <AcceptFooter fixed text="ОФОРМИТЬ ЗАКАЗ" onPress={order}>
+      <AcceptFooter text="ОФОРМИТЬ ЗАКАЗ" onPress={order}>
         <Row>
           <Text style={sheetStyles.labelText}>Стоимость заказа</Text>
           <Text style={sheetStyles.labelText}>{orderPrice} сум</Text>
@@ -216,70 +283,86 @@ const sheetStyles = StyleSheet.create({
     backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
   scroll: {
-    paddingBottom: 150,
+    paddingBottom: RH(150),
   },
   headText: {
-    fontSize: 20,
+    fontSize: RW(20),
     fontFamily: appStyles.FONT,
     color: appStyles.FONT_COLOR,
-    marginBottom: 20,
+    marginBottom: RH(20),
   },
   addingBlock: {
-    height: 60,
-    borderWidth: 0.5,
-    borderRadius: 20,
+    height: RH(60),
+    borderWidth: RW(0.5),
+    borderRadius: RW(20),
     borderColor: appStyles.FONT_COLOR_SECONDARY,
-    marginBottom: 20,
+    marginBottom: RH(20),
   },
   addingBlockText: {
     color: appStyles.COLOR_PRIMARY,
-    fontSize: 16,
+    fontSize: RW(16),
     fontFamily: appStyles.FONT,
-    marginLeft: 20,
+    marginLeft: RW(20),
   },
   addingBlockBtn: {
-    width: 60,
-    height: 60,
-    borderRadius: 20,
+    width: RW(60),
+    height: RH(60),
+    borderRadius: RW(20),
     backgroundColor: appStyles.COLOR_PRIMARY,
     justifyContent: 'center',
     alignItems: 'center',
   },
   locationBlock: {
     width: '100%',
-    height: 60,
-    borderWidth: 0.5,
-    borderRadius: 20,
+    height: RH(60),
+    borderWidth: RW(0.5),
+    borderRadius: RW(20),
     borderColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    marginBottom: 20,
-    paddingHorizontal: 20,
+    marginBottom: RH(20),
+    paddingHorizontal: RH(20),
   },
   locationBlockText: {
-    marginLeft: 20,
+    marginLeft: RW(20),
     color: appStyles.FONT_COLOR,
     fontFamily: appStyles.FONT,
-    fontSize: 14,
-    width: 175,
+    fontSize: RW(14),
+    width: RW(175),
     opacity: 0.5,
   },
   switch: {
-    marginBottom: 20,
+    marginBottom: RH(20),
   },
   IOSTimePicker: {
-    height: 130,
+    height: RH(130),
     borderColor: appStyles.COLOR_PRIMARY,
     borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: RW(10),
+    marginBottom: RH(20),
+  },
+  AndroidTimePickerText: {
+    color: appStyles.FONT_COLOR,
+    fontSize: 16,
+    fontFamily: appStyles.FONT,
+  },
+  AndroidTimePicker: {
+    height: RH(50),
+    borderColor: appStyles.COLOR_PRIMARY,
+    borderWidth: 1,
+    borderRadius: RW(10),
+    marginBottom: RH(20),
+    backgroundColor: '#fff',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   labelText: {
     fontSize: 16,
     fontFamily: appStyles.FONT,
     color: appStyles.FONT_COLOR,
-    marginBottom: 20,
+    marginBottom: RH(20),
   },
   paymentTypeContainer: {
     width: '100%',
@@ -289,13 +372,13 @@ const sheetStyles = StyleSheet.create({
     backgroundColor: appStyles.COLOR_PRIMARY,
   },
   paymentTypeConentContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: RW(15),
   },
   paymentTypeItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 19,
+    paddingVertical: RH(10),
+    paddingHorizontal: RW(19),
     backgroundColor: '#F2F2F4',
-    borderRadius: 200,
-    marginHorizontal: 5,
+    borderRadius: RW(200),
+    marginHorizontal: RH(5),
   },
 });

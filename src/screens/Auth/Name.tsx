@@ -2,10 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import appStyles from '../../constants/styles';
-import { setIsInitialOrder, setName } from '../../redux/slices/auth-slice';
+import {
+  setFromBasket,
+  setIsSignedIn,
+  setName,
+} from '../../redux/slices/auth-slice';
 import { RootState } from '../../redux/store';
 import UserInfoLayout from '../../components/Layouts/UserInfoLayout';
 import { sendData } from '../../utils/api';
+import { RH } from '../../utils/helpers/responsive';
 
 export type PhoneComponentProps = {
   navigation: any;
@@ -13,11 +18,13 @@ export type PhoneComponentProps = {
 
 export default function Name({ navigation }: PhoneComponentProps) {
   const dispatch = useDispatch();
-  const { name, phone, isInitialOrder } = useSelector(
+  const { name, phone, fromBasket } = useSelector(
     (state: RootState) => state.auth,
   );
 
-  const handlePrevStep = () => navigation.push('auth-code');
+  const handlePrevStep = () => navigation.goBack();
+
+  console.log(fromBasket);
 
   const endingAuthorization = () => {
     const body = {
@@ -26,14 +33,15 @@ export default function Name({ navigation }: PhoneComponentProps) {
     };
     sendData('clients', body)
       .then(() => {
-        if (isInitialOrder) {
-          dispatch(setIsInitialOrder(false));
+        dispatch(setIsSignedIn(true));
+        if (fromBasket) {
           navigation.navigate('basket', {
             screen: 'orders',
             params: {
-              initialOrder: true,
+              openingSheet: true,
             },
           });
+          dispatch(setFromBasket(false));
         } else {
           navigation.navigate('home');
         }
@@ -63,7 +71,7 @@ export default function Name({ navigation }: PhoneComponentProps) {
 const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
-    marginTop: 100,
+    marginTop: RH(100),
     textAlign: 'center',
   },
   text1: {
@@ -75,8 +83,8 @@ const styles = StyleSheet.create({
     color: appStyles.COLOR_PRIMARY,
   },
   inputContainer: {
-    marginTop: 110,
-    height: 70,
+    marginTop: RH(110),
+    height: RH(70),
     flexDirection: 'row',
     borderColor: 'rgba(30, 27, 38, 0.15)',
     borderWidth: 1,

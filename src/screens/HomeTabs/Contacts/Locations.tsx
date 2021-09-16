@@ -23,26 +23,26 @@ import QueryWrapper from '../../../components/Shared/QueryWrapper';
 import { showMessage } from 'react-native-flash-message';
 import { useRef } from 'react';
 import { NavigationType } from '../../../utils/types';
+import { useDispatch } from 'react-redux';
+import {
+  ILocations,
+  setSelectedStructure,
+} from '../../../redux/slices/order-slice';
 
 type Props = {
   navigation: NavigationType;
+  route: { params: { choosing: boolean } };
 };
 
-type AddressesType = {
-  UIDStructure: string;
-  Structure: string;
-  Address: string;
-  Image: string;
-  Lat: number;
-  Lon: number;
-};
-
-export default function Locations({ navigation }: Props) {
+export default function Locations({ navigation, route }: Props) {
+  const dispatch = useDispatch();
   const mapRef = useRef<MapView>(null);
-  const { data, isError, isLoading } = useQuery<AddressesType[]>(
+  const { choosing } = route.params;
+
+  const { data, isError, isLoading } = useQuery<ILocations[]>(
     'addresses',
     async () => {
-      const response = await getResource('pizzerias');
+      const response = await getResource<ILocations[]>('pizzerias');
       return response?.result;
     },
   );
@@ -64,17 +64,27 @@ export default function Locations({ navigation }: Props) {
   }, []);
 
   const renderItem = useCallback(
-    ({ item }: { item: AddressesType }) => (
+    ({ item }: { item: ILocations }) => (
       <TouchableOpacity
         style={styles.imageWrapper}
-        onPress={() =>
-          navigation.navigate('contacts', {
-            screen: 'location',
-            params: {
-              id: item.UIDStructure,
-            },
-          })
-        }>
+        onPress={() => {
+          if (choosing) {
+            dispatch(setSelectedStructure(item));
+            navigation.navigate('basket', {
+              screen: 'orders',
+              params: {
+                openingSheet: true,
+              },
+            });
+          } else {
+            navigation.navigate('contacts', {
+              screen: 'location',
+              params: {
+                id: item.UIDStructure,
+              },
+            });
+          }
+        }}>
         <ImageBackground
           style={styles.image}
           source={{ uri: 'data:image/png;base64, ' + item?.Image }}>
@@ -89,7 +99,8 @@ export default function Locations({ navigation }: Props) {
         </ImageBackground>
       </TouchableOpacity>
     ),
-    [navigation],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   useEffect(() => {

@@ -4,8 +4,9 @@ const initialState = {
   name: '',
   phone: '',
   code: '',
+  isSignedIn: false,
   isAuthorizing: false,
-  isInitialOrder: true,
+  fromBasket: false,
 };
 
 export const authSlice = createSlice({
@@ -21,11 +22,15 @@ export const authSlice = createSlice({
     setCode: (state, action: PayloadAction<string>) => {
       state.code = action.payload;
     },
+
     setIsAuthorizing: (state, action: PayloadAction<boolean>) => {
       state.isAuthorizing = action.payload;
     },
-    setIsInitialOrder: (state, action: PayloadAction<boolean>) => {
-      state.isAuthorizing = action.payload;
+    setIsSignedIn: (state, action: PayloadAction<boolean>) => {
+      state.isSignedIn = action.payload;
+    },
+    setFromBasket: (state, action: PayloadAction<boolean>) => {
+      state.fromBasket = action.payload;
     },
     logOut: () => {
       return initialState;
@@ -41,7 +46,8 @@ export const {
   setCode,
   logOut,
   setIsAuthorizing,
-  setIsInitialOrder,
+  setIsSignedIn,
+  setFromBasket,
 } = actions;
 
 export default reducer;

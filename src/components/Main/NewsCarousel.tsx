@@ -3,6 +3,7 @@ import { Image, StyleSheet, View, Dimensions } from 'react-native';
 import defaultImage from '../../assets/image/default-news.png';
 import Carousel, { PaginationLight } from 'react-native-x2-carousel';
 import appStyles from '../../constants/styles';
+import { RH, RW } from '../../utils/helpers/responsive';
 
 const { width } = Dimensions.get('screen');
 
@@ -11,7 +12,7 @@ type dataType = {
 };
 
 export default function NewsCarousel() {
-  const [data, setData] = useState<dataType[]>([{ num: 1 }, { num: 2 }]);
+  const [data] = useState<dataType[]>([{ num: 1 }, { num: 2 }]);
 
   return (
     <Carousel
@@ -33,9 +34,9 @@ export default function NewsCarousel() {
 
 const styles = StyleSheet.create({
   block: {
-    width,
-    paddingHorizontal: appStyles.HORIZONTAL_PADDING,
+    width: width,
+    paddingHorizontal: RW(appStyles.HORIZONTAL_PADDING),
     backgroundColor: appStyles.BACKGROUND_DEFAULT,
   },
-  img: { width: '100%', borderRadius: 20 },
+  img: { width: '100%', borderRadius: RH(20) },
 });

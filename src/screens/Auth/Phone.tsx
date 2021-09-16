@@ -6,6 +6,7 @@ import { setPhone } from '../../redux/slices/auth-slice';
 import { RootState } from '../../redux/store';
 import { NavigationType } from '../../utils/types';
 import UserInfoLayout from '../../components/Layouts/UserInfoLayout';
+import { RH } from '../../utils/helpers/responsive';
 
 export type PhoneComponentProps = {
   navigation: NavigationType;
@@ -28,6 +29,7 @@ export default function Phone({ navigation }: PhoneComponentProps) {
         <Text style={styles.inputText}>+998</Text>
         <View style={styles.inputDivider} />
         <TextInput
+          keyboardType="numeric"
           onChangeText={text => dispatch(setPhone(text))}
           defaultValue={phone}
           style={[styles.inputText, styles.input]}
@@ -40,7 +42,7 @@ export default function Phone({ navigation }: PhoneComponentProps) {
 const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
-    marginTop: 100,
+    marginTop: RH(100),
     textAlign: 'center',
   },
   text1: {
@@ -52,8 +54,8 @@ const styles = StyleSheet.create({
     color: appStyles.COLOR_PRIMARY,
   },
   inputContainer: {
-    marginTop: 110,
-    height: 70,
+    marginTop: RH(110),
+    height: RH(70),
     flexDirection: 'row',
     borderColor: 'rgba(30, 27, 38, 0.15)',
     borderWidth: 1,
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   inputDivider: {
-    height: 42,
+    height: RH(42),
     width: 0.5,
     backgroundColor: appStyles.FONT_COLOR_SECONDARY,
     marginHorizontal: appStyles.HORIZONTAL_PADDING,

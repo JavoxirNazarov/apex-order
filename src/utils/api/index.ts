@@ -1,12 +1,12 @@
 import { showMessage } from 'react-native-flash-message';
 
-export const getResource = async (reqName: string) => {
+export async function getResource<T>(reqName: string): Promise<{ result: T }> {
   try {
     const response = await fetch(
-      `http://192.168.0.124/apex/hs/client/${reqName}`,
+      `https://apex.lavina.uz/apex/hs/client/${reqName}`,
       {
         headers: {
-          Authorization: 'Basic Ym9zczox',
+          Authorization: 'Basic 0JDQtNC80LjQvToyMDExMjAxNA==',
         },
       },
     );
@@ -21,24 +21,24 @@ export const getResource = async (reqName: string) => {
 
     const data = await response.json();
     return data;
-  } catch (err) {
+  } catch (err: any) {
     showMessage({
       message: 'Ошибка',
       description: err.message,
       type: 'danger',
     });
-    throw Error(err);
+    throw Error(err.message);
   }
-};
+}
 
 export const sendData = async (reqName: string, body: any) => {
   try {
     const response = await fetch(
-      `http://192.168.0.124/apex/hs/client/${reqName}`,
+      `https://apex.lavina.uz/apex/hs/client/${reqName}`,
       {
         method: 'POST',
         headers: {
-          Authorization: 'Basic Ym9zczox',
+          Authorization: 'Basic 0JDQtNC80LjQvToyMDExMjAxNA==',
           'Content-Type': 'multipart/form-data',
         },
         body: JSON.stringify(body),
@@ -55,7 +55,7 @@ export const sendData = async (reqName: string, body: any) => {
 
     const data = await response.json();
     return data;
-  } catch (err) {
+  } catch (err: any) {
     showMessage({
       message: 'Ошибка',
       description: err.message,

@@ -22,32 +22,32 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 
 export default function Owner({ navigation }: { navigation: NavigationType }) {
-  const { name } = useSelector((state: RootState) => state.auth);
+  const { isSignedIn } = useSelector((state: RootState) => state.auth);
 
   return (
     <View style={styles.container}>
-      <View style={styles.imgBlock}>
-        <TouchableOpacity
-          style={styles.settingsBtn}
-          onPress={() =>
-            navigation.navigate('profile', {
-              screen: 'user-settings',
-            })
-          }>
-          <SettingsIcon />
-        </TouchableOpacity>
-        <ImageBackground
-          source={profileBackground}
-          style={styles.imgWrapper}
-          resizeMode="stretch">
-          <Image source={userImg} />
-        </ImageBackground>
-      </View>
+      {isSignedIn ? (
+        <>
+          <View style={styles.imgBlock}>
+            <TouchableOpacity
+              style={styles.settingsBtn}
+              onPress={() =>
+                navigation.navigate('profile', {
+                  screen: 'user-settings',
+                })
+              }>
+              <SettingsIcon />
+            </TouchableOpacity>
+            <ImageBackground
+              source={profileBackground}
+              style={styles.imgWrapper}
+              resizeMode="stretch">
+              <Image source={userImg} />
+            </ImageBackground>
+          </View>
 
-      <CustomBottomSheet handleComponent={<BottomSheetHandle />}>
-        <PaddWrapper>
-          {name ? (
-            <>
+          <CustomBottomSheet handleComponent={<BottomSheetHandle />}>
+            <PaddWrapper>
               <TouchableOpacity
                 style={styles.row}
                 onPress={() =>
@@ -74,26 +74,24 @@ export default function Owner({ navigation }: { navigation: NavigationType }) {
                 <Text style={styles.name}>Адреса доставки</Text>
                 <ArrowIcon style={styles.arrowRight} />
               </TouchableOpacity>
-            </>
-          ) : (
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => navigation.navigate('auth-phone')}>
-              <View style={styles.rowIconWraper}>
-                <ContactIcon width={15.3} height={18} fill="#1E1B26" />
-              </View>
-              <Text style={styles.name}>Зарегистрироватся</Text>
-              <ArrowIcon style={styles.arrowRight} />
-            </TouchableOpacity>
-          )}
-        </PaddWrapper>
-      </CustomBottomSheet>
+            </PaddWrapper>
+          </CustomBottomSheet>
+        </>
+      ) : (
+        <TouchableOpacity>
+          <Text
+            style={styles.toAuth}
+            onPress={() => navigation.navigate('auth-phone')}>
+            Регистрация
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   imgBlock: {
     position: 'relative',
     width: '100%',
@@ -148,5 +146,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: appStyles.FONT,
     color: appStyles.FONT_COLOR,
+  },
+  toAuth: {
+    fontSize: 16,
+    fontFamily: appStyles.FONT,
+    color: appStyles.COLOR_PRIMARY,
   },
 });

@@ -17,12 +17,12 @@ type SubNavigator<T extends ParamListBase> = {
 }[keyof T];
 
 type basketNavigation = {
-  orders: { initialOrder: boolean };
+  orders: { openingSheet: boolean };
   order: { UID: string };
 };
 
 type contactsNavigation = {
-  locations: undefined;
+  locations: { choosing: boolean };
   location: { id: string };
 };
 type profileNavigation = {

@@ -16,15 +16,26 @@ interface IAddress {
   street: string;
 }
 
+export interface ILocations {
+  UIDStructure: string;
+  Structure: string;
+  Address: string;
+  Image: string;
+  Lat: number;
+  Lon: number;
+}
+
 interface IState {
   products: IOrderProduct[];
   address: IAddress | null;
   orderDate: string;
+  selectedStructure: ILocations | null;
 }
 
 const initialState: IState = {
   products: [],
   address: null,
+  selectedStructure: null,
   orderDate: moment().format(),
 };
 
@@ -79,6 +90,9 @@ export const orderSlice = createSlice({
     setOrderDate: (state, { payload }: PayloadAction<string>) => {
       state.orderDate = payload;
     },
+    setSelectedStructure: (state, { payload }: PayloadAction<ILocations>) => {
+      state.selectedStructure = payload;
+    },
     refreshOrderState: () => {
       return initialState;
     },
@@ -95,6 +109,7 @@ export const {
   setAddress,
   setOrderDate,
   refreshOrderState,
+  setSelectedStructure,
 } = actions;
 
 export default reducer;

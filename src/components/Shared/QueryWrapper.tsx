@@ -7,7 +7,7 @@ import LoadingIndicator from './LoadingIndicator';
 type Props = {
   children: ChildrenType;
   isLoading: boolean;
-  isError: boolean;
+  isError?: boolean;
   errorTextStyle?: TextStyle;
   IndicatorStyle?: ViewStyle;
   indicatorSize?: number | 'small' | 'large' | undefined;

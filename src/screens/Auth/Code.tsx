@@ -6,6 +6,7 @@ import appStyles from '../../constants/styles';
 import { setCode } from '../../redux/slices/auth-slice';
 import { RootState } from '../../redux/store';
 import UserInfoLayout from '../../components/Layouts/UserInfoLayout';
+import { RH } from '../../utils/helpers/responsive';
 
 export type PhoneComponentProps = {
   navigation: any;
@@ -13,7 +14,7 @@ export type PhoneComponentProps = {
 
 export default function Code({ navigation }: PhoneComponentProps) {
   const handleNextStep = () => navigation.push('auth-name');
-  const onBackPress = () => navigation.push('auth-phone');
+  const onBackPress = () => navigation.goBack();
   const dispatch = useDispatch();
   const { code } = useSelector((state: RootState) => state.auth);
 
@@ -59,7 +60,7 @@ export default function Code({ navigation }: PhoneComponentProps) {
 const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
-    marginTop: 100,
+    marginTop: RH(100),
     textAlign: 'center',
   },
   text1: {
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   },
   subTextContainer: {
     alignItems: 'center',
-    marginTop: 11,
+    marginTop: RH(11),
   },
   subText: {
     width: 155,
@@ -89,12 +90,12 @@ const styles = StyleSheet.create({
     color: appStyles.FONT_COLOR_SECONDARY,
   },
   inputContainer: {
-    marginTop: 110,
+    marginTop: RH(110),
     width: '100%',
   },
   input: {
-    height: 60,
-    width: 60,
+    height: RH(60),
+    width: RH(60),
     borderColor: 'rgba(30, 27, 38, 0.15)',
     borderWidth: 1,
     borderRadius: 10,

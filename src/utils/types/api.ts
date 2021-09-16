@@ -25,7 +25,7 @@ export interface IProductsItem {
 
 export interface ISauce {
   UIDNomenclature: string;
-  image: string;
+  Image: string;
   Name: string;
   Price: number;
 }

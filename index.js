@@ -3,7 +3,7 @@
  */
 
 import 'react-native-gesture-handler';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, LogBox } from 'react-native';
 import App from './App';
 import React from 'react';
 import { name as appName } from './app.json';
@@ -14,7 +14,11 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 
 const persistor = persistStore(store);
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
+LogBox.ignoreLogs(['Setting a timer']);
 
 const myApp = () => (
   <Provider store={store}>

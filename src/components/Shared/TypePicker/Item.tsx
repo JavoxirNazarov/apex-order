@@ -6,12 +6,18 @@ import { SettingState } from '../../../utils/types';
 import { IGroup, ISauce } from '../../../utils/types/api';
 
 interface Props {
-  info: IGroup | ISauce | string;
+  info: IGroup | ISauce;
   active?: boolean;
   setSelected: SettingState<string>;
 }
 
 export default function Item({ info, active, setSelected }: Props) {
+  const getName = () => {
+    if (info?.Group !== undefined) return info?.Group;
+    if (info?.Name !== undefined) return info?.Name;
+    return info;
+  };
+
   return (
     <TouchableOpacity
       onPress={() => setSelected(checkAndGetItemUID(info))}
@@ -27,7 +33,7 @@ export default function Item({ info, active, setSelected }: Props) {
         />
       </View>
       <Text style={[styles.text, active ? styles.text_active : {}]}>
-        {info?.Group || info?.Name || info}
+        {getName()}
       </Text>
     </TouchableOpacity>
   );

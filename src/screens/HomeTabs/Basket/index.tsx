@@ -10,7 +10,7 @@ export default function Contacts() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="orders"
-        initialParams={{ initialOrder: false }}
+        initialParams={{ openingSheet: false }}
         component={Orders}
       />
       <Stack.Screen name="order" component={Order} />

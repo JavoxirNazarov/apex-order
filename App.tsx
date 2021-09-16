@@ -46,9 +46,9 @@ const App = () => {
               <Stack.Screen name="auth-name" component={Name} />
             </Stack.Navigator>
           </NavigationContainer>
-          <FlashMessage position="top" />
         </View>
       </BottomSheetModalProvider>
+      <FlashMessage position="top" />
     </SafeAreaView>
   );
 };

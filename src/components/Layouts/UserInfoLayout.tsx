@@ -34,7 +34,7 @@ export default function UserInfoLayout({
 
         <PaddWrapper>{children}</PaddWrapper>
 
-        <AcceptFooter onPress={handleNextStep} text="Далее" />
+        <AcceptFooter fixed={false} onPress={handleNextStep} text="Далее" />
       </View>
     </KeyboardAvoidingView>
   );
