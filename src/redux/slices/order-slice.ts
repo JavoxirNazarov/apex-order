@@ -30,6 +30,8 @@ interface IState {
   address: IAddress | null;
   orderDate: string;
   selectedStructure: ILocations | null;
+  orderType: 'false' | 'true';
+  paymentType: string;
 }
 
 const initialState: IState = {
@@ -37,6 +39,8 @@ const initialState: IState = {
   address: null,
   selectedStructure: null,
   orderDate: moment().format(),
+  orderType: 'false',
+  paymentType: '',
 };
 
 export const orderSlice = createSlice({
@@ -44,18 +48,11 @@ export const orderSlice = createSlice({
   initialState,
   reducers: {
     addToBasket: (state, { payload }: PayloadAction<IOrderProduct>) => {
-      if (
-        state.products.some(
-          el => el.UIDProduct === payload.UIDProduct && el.Key === payload.Key,
-        )
-      ) {
-        state.products = state.products.map(el => {
-          if (el.UIDProduct === payload.UIDProduct) {
-            return { ...el, Amount: el.Amount + 1 };
-          }
-          return el;
-        });
-      } else {
+      const sameProduct = state.products.some(
+        el => el.UIDProduct === payload.UIDProduct && el.Key === payload.Key,
+      );
+
+      if (!sameProduct) {
         state.products = [...state.products, payload];
       }
     },
@@ -93,6 +90,12 @@ export const orderSlice = createSlice({
     setSelectedStructure: (state, { payload }: PayloadAction<ILocations>) => {
       state.selectedStructure = payload;
     },
+    setOrderType: (state, { payload }: PayloadAction<'false' | 'true'>) => {
+      state.orderType = payload;
+    },
+    setPaymentType: (state, { payload }: PayloadAction<string>) => {
+      state.paymentType = payload;
+    },
     refreshOrderState: () => {
       return initialState;
     },
@@ -109,6 +112,8 @@ export const {
   setAddress,
   setOrderDate,
   refreshOrderState,
+  setOrderType,
+  setPaymentType,
   setSelectedStructure,
 } = actions;
 

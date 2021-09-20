@@ -22,7 +22,7 @@ type Props = {
 export default function Product({ route, navigation }: Props) {
   const dispatch = useDispatch();
   const { UID } = route.params;
-  const [selectedSize, setSelectedSize] = useState('Маленькая');
+  const [selectedSize, setSelectedSize] = useState('');
   const [selectedSauce, setSelectedSauce] = useState('');
   const [selectedAdditive, setSelectedAdditive] = useState('');
   const [selectedVariantUID, setSelectedVariantUID] = useState('');
@@ -30,15 +30,21 @@ export default function Product({ route, navigation }: Props) {
   const { isLoading, isError, data } = useQuery<IProduct>(
     ['product', UID],
     async () => {
-      const response = await getResource('productinfo?UIDProduct=' + UID);
+      const response = await getResource<IProduct>(
+        'productinfo?UIDProduct=' + UID,
+      );
       return response.result;
     },
     { enabled: !!UID },
   );
 
   useEffect(() => {
-    if (data && !data?.isPizza) {
-      setSelectedVariantUID(data?.productInfo?.Variants[0]?.UIDNomenclature);
+    if (data) {
+      if (!data?.isPizza) {
+        setSelectedVariantUID(data?.productInfo?.Variants[0]?.UIDNomenclature);
+      } else {
+        setSelectedSize(data?.productInfo?.Sizes[0] || '');
+      }
     }
   }, [data]);
 
@@ -65,10 +71,14 @@ export default function Product({ route, navigation }: Props) {
       }
     };
 
-    return data?.productInfo?.Sizes?.map(el => ({
-      label: sizeToNumber(el),
-      value: el,
-    }));
+    return (
+      data?.productInfo?.Sizes?.map(el => {
+        return {
+          label: sizeToNumber(el),
+          value: el,
+        };
+      }) || []
+    );
   }, [data]);
 
   const Price = useMemo(() => {
@@ -84,6 +94,18 @@ export default function Product({ route, navigation }: Props) {
       return search?.Price || 0;
     }
   }, [selectedSize, selectedAdditive, data, selectedVariantUID]);
+
+  const handleAdditive = (val: string) => {
+    if (val === selectedAdditive) setSelectedAdditive('');
+    else setSelectedAdditive(val);
+  };
+
+  const addSouse = (val: string) => {
+    setSelectedSauce(val);
+    // const getSause = data?.productInfo?.Sauces.find(
+    //   el => el.UIDNomenclature === val,
+    // );
+  };
 
   const addingToBasket = () => {
     dispatch(
@@ -123,7 +145,7 @@ export default function Product({ route, navigation }: Props) {
           {data?.isPizza ? (
             <>
               <PaddWrapper>
-                {!!sizeOptions?.length && (
+                {sizeOptions?.length > 1 && (
                   <MySwitchSelector
                     options={sizeOptions}
                     selectFunc={setSelectedSize}
@@ -137,7 +159,7 @@ export default function Product({ route, navigation }: Props) {
               <TypePicker
                 itemList={data?.productInfo?.Additives}
                 selected={selectedAdditive}
-                setSelected={setSelectedAdditive}
+                setSelected={handleAdditive}
               />
               <PaddWrapper>
                 <Text style={styles.saucesLabel}>Соусы</Text>
@@ -145,7 +167,7 @@ export default function Product({ route, navigation }: Props) {
               <TypePicker
                 itemList={data?.productInfo?.Sauces}
                 selected={selectedSauce}
-                setSelected={setSelectedSauce}
+                setSelected={addSouse}
               />
             </>
           ) : (

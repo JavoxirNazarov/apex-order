@@ -47,8 +47,6 @@ export default function Locations({ navigation, route }: Props) {
     },
   );
 
-  console.log(data);
-
   const snapPoints = useMemo(() => ['35%', '70%'], []);
 
   const handleLink = useCallback(async (url: string) => {

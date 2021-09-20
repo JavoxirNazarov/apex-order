@@ -5,13 +5,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
 } from 'react-native';
 import BottomSheetHandle from '../../../components/Shared/BottomSheetHandle';
 import PaddWrapper from '../../../components/Shared/PaddWrapper';
 import appStyles from '../../../constants/styles';
 import profileBackground from '../../../assets/image/profile-background.png';
-import userImg from '../../../assets/image/user-img.png';
 import SettingsIcon from '../../../assets/icons/profile/Settings';
 import ClockIcon from '../../../assets/icons/profile/Clock';
 import ArrowIcon from '../../../assets/icons/Arrow';
@@ -42,7 +40,7 @@ export default function Owner({ navigation }: { navigation: NavigationType }) {
               source={profileBackground}
               style={styles.imgWrapper}
               resizeMode="stretch">
-              <Image source={userImg} />
+              <View />
             </ImageBackground>
           </View>
 

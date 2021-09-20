@@ -29,7 +29,7 @@ export default function History() {
     isError,
     data: orders,
   } = useQuery<ordersType[]>(['user-orders'], async () => {
-    const response = await getResource('orders?phone=' + phone);
+    const response = await getResource<ordersType[]>('orders?phone=' + phone);
     return response.result;
   });
 

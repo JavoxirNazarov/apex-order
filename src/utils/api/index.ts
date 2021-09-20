@@ -1,12 +1,14 @@
 import { showMessage } from 'react-native-flash-message';
+// `https://apex.lavina.uz/apex/hs/client/${reqName}`,
+// Authorization: 'Basic 0JDQtNC80LjQvToyMDExMjAxNA==',
 
 export async function getResource<T>(reqName: string): Promise<{ result: T }> {
   try {
     const response = await fetch(
-      `https://apex.lavina.uz/apex/hs/client/${reqName}`,
+      `http://192.168.1.102:85/apex/hs/client/${reqName}`,
       {
         headers: {
-          Authorization: 'Basic 0JDQtNC80LjQvToyMDExMjAxNA==',
+          Authorization: 'Basic Ym9zczox',
         },
       },
     );
@@ -34,11 +36,11 @@ export async function getResource<T>(reqName: string): Promise<{ result: T }> {
 export const sendData = async (reqName: string, body: any) => {
   try {
     const response = await fetch(
-      `https://apex.lavina.uz/apex/hs/client/${reqName}`,
+      `http://192.168.1.102:85/apex/hs/client/${reqName}`,
       {
         method: 'POST',
         headers: {
-          Authorization: 'Basic 0JDQtNC80LjQvToyMDExMjAxNA==',
+          Authorization: 'Basic Ym9zczox',
           'Content-Type': 'multipart/form-data',
         },
         body: JSON.stringify(body),

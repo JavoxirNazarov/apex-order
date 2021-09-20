@@ -7,13 +7,12 @@ import Item from './Item';
 // import dessertImg from '../../../assets/image/categories/dessert.png';
 import appStyles from '../../../constants/styles';
 import { IGroup, ISauce } from '../../../utils/types/api';
-import { SettingState } from '../../../utils/types';
 
 type itemsType = IGroup[] | ISauce[] | string[] | undefined;
 
 type Props = {
   itemList: itemsType;
-  setSelected: SettingState<string>;
+  setSelected: (val: string) => void;
   selected: string;
 };
 

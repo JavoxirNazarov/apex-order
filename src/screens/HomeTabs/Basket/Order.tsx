@@ -55,7 +55,7 @@ export default function Order({
   const { data: order } = useQuery<IOrder>(
     ['user-orders', UID],
     async () => {
-      const response = await getResource('orders?UIDOrder=' + UID);
+      const response = await getResource<IOrder>('orders?UIDOrder=' + UID);
       return response.result;
     },
     { enabled: !!UID, refetchInterval: 10000 },

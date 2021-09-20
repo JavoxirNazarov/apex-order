@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { ViewStyle } from 'react-native';
 import SwitchSelector, {
   ISwitchSelectorOption,
@@ -6,8 +6,8 @@ import SwitchSelector, {
 import appStyles from '../../constants/styles';
 
 type Props = {
-  selectFunc: (val: string) => void;
   options: ISwitchSelectorOption[];
+  selectFunc: (val: any) => void;
   switchStyle: ViewStyle;
   value: string;
   byLabel?: boolean;
@@ -20,7 +20,18 @@ export default function MySwitchSelector({
   value,
   byLabel = false,
 }: Props) {
-  return options?.length ? (
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useLayoutEffect(() => {
+    const index = options?.findIndex(el =>
+      byLabel ? el.label === value : el.value === value,
+    );
+    setSelectedIndex(index || 0);
+  }, [options, value, byLabel]);
+
+  console.log(selectedIndex);
+
+  return (
     <SwitchSelector
       selectedColor="#fff"
       textColor={appStyles.FONT_COLOR_SECONDARY}
@@ -31,14 +42,9 @@ export default function MySwitchSelector({
       borderColor="transparent"
       valuePadding={5}
       options={options}
-      initial={
-        value
-          ? options?.findIndex(el =>
-              byLabel ? el.label === value : el.value === value,
-            )
-          : 0
-      }
+      value={selectedIndex}
+      initial={selectedIndex}
       onPress={(val: string) => selectFunc(val)}
     />
-  ) : null;
+  );
 }

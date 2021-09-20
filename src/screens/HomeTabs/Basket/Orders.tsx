@@ -1,11 +1,5 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import MinusIcon from '../../../assets/icons/Minus';
@@ -39,16 +33,20 @@ export default function Orders({
   route: { params: { openingSheet: boolean } };
 }) {
   const dispatch = useDispatch();
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { openingSheet } = route?.params;
-  const { products, address, orderDate, selectedStructure } = useSelector(
-    (state: RootState) => state.orderSlice,
-  );
+  const {
+    products,
+    address,
+    orderDate,
+    selectedStructure,
+    orderType,
+    paymentType,
+  } = useSelector((state: RootState) => state.orderSlice);
+
   const { phone, isSignedIn, name } = useSelector(
     (state: RootState) => state.auth,
   );
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const [orderType, setOrderType] = useState('false');
-  const [paymentType, setPaymentType] = useState('');
 
   const openBottomSheet = () => {
     if (isSignedIn) {
@@ -79,11 +77,6 @@ export default function Orders({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openingSheet]);
 
-  const changeOrderType = (val: string) => {
-    setOrderType(val);
-    setPaymentType('');
-  };
-
   const orderPrice = useMemo(() => {
     return (
       products.reduce((acc, curr) => {
@@ -102,7 +95,7 @@ export default function Orders({
       return;
     }
 
-    if (!selectedStructure) {
+    if (orderType === 'true' && !selectedStructure) {
       showMessage({
         message: 'Ошибка',
         description: 'Выберите ближайший филиал!',
@@ -111,7 +104,7 @@ export default function Orders({
       return;
     }
 
-    if (!address) {
+    if (orderType === 'false' && !address) {
       showMessage({
         message: 'Ошибка',
         description: 'Выберите адресс!',
@@ -137,6 +130,7 @@ export default function Orders({
       PickupTime: moment(orderDate).format('YYYYMMDDHHmmss'),
       UIDStructure: selectedStructure?.UIDStructure,
     };
+
     sendData('orders', orderBody)
       .then(res => {
         closeBottomSheet();
@@ -204,10 +198,6 @@ export default function Orders({
         </PaddWrapper>
       </ScrollLayoutWithBtn>
       <BottomSheet
-        orderType={orderType}
-        changeOrderType={changeOrderType}
-        paymentType={paymentType}
-        setPaymentType={setPaymentType}
         bottomSheetModalRef={bottomSheetModalRef}
         orderPrice={orderPrice}
         navigation={navigation}

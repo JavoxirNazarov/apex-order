@@ -4,13 +4,13 @@ import React, { RefObject, useMemo, useState } from 'react';
 import {
   Image,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import ContactIcon from '../../assets/icons/tabs/Contacts';
 import appStyles from '../../constants/styles';
 import AcceptFooter from '../Shared/AcceptFooter';
@@ -28,7 +28,11 @@ import MySwitchSelector from '../Shared/MySwitchSelector';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { setOrderDate } from '../../redux/slices/order-slice';
+import {
+  setOrderDate,
+  setOrderType,
+  setPaymentType,
+} from '../../redux/slices/order-slice';
 import { NavigationType } from '../../utils/types';
 import moment from 'moment';
 import { RH, RW } from '../../utils/helpers/responsive';
@@ -54,10 +58,6 @@ type PaymenyType = {
 };
 
 type Props = {
-  orderType: string;
-  changeOrderType: (val: string) => void;
-  paymentType: string;
-  setPaymentType: (val: string) => void;
   orderPrice: number;
   bottomSheetModalRef: RefObject<BottomSheetModal>;
   closeBottomSheet: () => void;
@@ -66,10 +66,6 @@ type Props = {
 };
 
 export default function BottomSheet({
-  orderType,
-  changeOrderType,
-  paymentType,
-  setPaymentType,
   orderPrice,
   bottomSheetModalRef,
   closeBottomSheet,
@@ -78,11 +74,10 @@ export default function BottomSheet({
 }: Props) {
   const dispatch = useDispatch();
   const [timePick, setTimePick] = useState(false);
-  const { address, orderDate, selectedStructure } = useSelector(
-    (state: RootState) => state.orderSlice,
-  );
+  const { address, orderDate, selectedStructure, orderType, paymentType } =
+    useSelector((state: RootState) => state.orderSlice);
 
-  const snapPoints = useMemo(() => ['45%', '62%'], []);
+  const snapPoints = useMemo(() => [RW(550)], []);
 
   const {
     data: payments,
@@ -94,6 +89,11 @@ export default function BottomSheet({
     );
     return response?.result;
   });
+
+  const changeOrderType = (val: 'false' | 'true') => {
+    dispatch(setOrderType(val));
+    dispatch(setPaymentType(val));
+  };
 
   const onTimePick = (_: any, selectedDate: any) => {
     setTimePick(Platform.OS === 'ios');
@@ -197,7 +197,7 @@ export default function BottomSheet({
         )
       }
       ref={bottomSheetModalRef}
-      index={1}
+      index={0}
       snapPoints={snapPoints}>
       <BottomSheetScrollView
         contentContainerStyle={sheetStyles.scroll}
@@ -208,7 +208,14 @@ export default function BottomSheet({
           <TouchableOpacity
             onPress={() => {
               closeBottomSheet();
-              navigation.navigate('map');
+              if (selfOrder) {
+                navigation.navigate('contacts', {
+                  screen: 'locations',
+                  params: { choosing: true },
+                });
+              } else {
+                navigation.navigate('map');
+              }
             }}>
             <Row containerStyle={sheetStyles.addingBlock}>
               <Text style={sheetStyles.addingBlockText}>
@@ -248,7 +255,7 @@ export default function BottomSheet({
             {payments?.map((payment, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => setPaymentType(payment?.UIDPayment)}
+                onPress={() => dispatch(setPaymentType(payment?.UIDPayment))}
                 style={[
                   sheetStyles.paymentTypeItem,
                   paymentType === payment?.UIDPayment &&

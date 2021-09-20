@@ -5,6 +5,7 @@ import {
   Platform,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 import Geocoder from 'react-native-geocoder';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -13,9 +14,11 @@ import BackBtn from '../components/Shared/BackBtn';
 import { setAddress } from '../redux/slices/order-slice';
 import { RootState } from '../redux/store';
 import Geolocation from 'react-native-geolocation-service';
+import AcceptFooter from '../components/Shared/AcceptFooter';
+import { NavigationType } from '../utils/types';
 Geocoder.fallbackToGoogle('AIzaSyB25GTD2QikXU-TNv9vPIHN4C-A5Ff8ERc');
 
-export default function Map() {
+export default function Map({ navigation }: { navigation: NavigationType }) {
   const mapRef = useRef<MapView>(null);
   const dispatch = useDispatch();
   const { address } = useSelector((state: RootState) => state.orderSlice);
@@ -102,6 +105,19 @@ export default function Map() {
           />
         )}
       </MapView>
+
+      <AcceptFooter
+        fixed
+        text={address?.street || 'Выберите локацию'}
+        onPress={() =>
+          navigation.navigate('basket', {
+            screen: 'orders',
+            params: {
+              openingSheet: true,
+            },
+          })
+        }
+      />
     </View>
   );
 }
@@ -109,5 +125,6 @@ export default function Map() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
   },
 });

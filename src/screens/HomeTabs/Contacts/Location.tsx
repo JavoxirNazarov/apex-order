@@ -25,7 +25,9 @@ export default function Location({ route }: Props) {
   const { data, isError, isLoading } = useQuery<AddressType>(
     ['addresses', id],
     async () => {
-      const response = await getResource('pizzerias?UIDStructure=' + id);
+      const response = await getResource<AddressType>(
+        'pizzerias?UIDStructure=' + id,
+      );
       return response?.result;
     },
   );

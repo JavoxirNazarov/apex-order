@@ -18,7 +18,7 @@ export default function Home() {
     isError: groupsIsError,
     data: groups,
   } = useQuery<IGroup[]>('groups', async () => {
-    const response = await getResource('groups');
+    const response = await getResource<IGroup[]>('groups');
     setSelectedGroup(response?.result[0]?.UIDGroup);
     return response.result;
   });
@@ -31,7 +31,9 @@ export default function Home() {
   } = useQuery<IProductsItem[]>(
     ['groups', selectedGroup],
     async () => {
-      const response = await getResource('groups?UIDGroup=' + selectedGroup);
+      const response = await getResource<IProductsItem[]>(
+        'groups?UIDGroup=' + selectedGroup,
+      );
       return response.result;
     },
     { enabled: !!selectedGroup },

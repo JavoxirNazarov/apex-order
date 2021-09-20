@@ -8,6 +8,6 @@ export const RW = (val: number) => {
 };
 
 export const RH = (val: number) => {
-  const scale = height / 812;
+  const scale = height / 768;
   return val * scale;
 };
