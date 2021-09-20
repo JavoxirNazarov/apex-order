@@ -5,7 +5,6 @@ import {
   Platform,
   StyleSheet,
   View,
-  Text,
 } from 'react-native';
 import Geocoder from 'react-native-geocoder';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
